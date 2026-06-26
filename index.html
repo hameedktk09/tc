@@ -143,6 +143,10 @@
             color: var(--gray-400);
             margin-top: 12px;
             line-height: 1.6;
+            display: none;
+        }
+        .login-box .user-hint.visible {
+            display: block;
         }
         .login-box .user-hint span {
             color: var(--gray-600);
@@ -623,7 +627,7 @@
             <button type="submit" class="login-btn">Login</button>
         </form>
         <div class="error" id="errorMsg"></div>
-        <div class="user-hint">
+        <div class="user-hint" id="userHint">
             <span>Hint:</span> admin / adm25
         </div>
     </div>
@@ -732,7 +736,7 @@
         },
         "Hameed": {
             "password": "E98",
-            "role": "staff",
+            "role": "admin",
             "approved": true,
             "fullName": "Dr. Hameed Ur Rehman Khan",
             "email": "h.rehman@asu.edu.om"
@@ -752,6 +756,7 @@
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const errorMsg = document.getElementById('errorMsg');
+    const userHint = document.getElementById('userHint');
     const displayName = document.getElementById('displayName');
     const reportList = document.getElementById('reportList');
     const recordCount = document.getElementById('recordCount');
@@ -807,6 +812,9 @@
         appContent.classList.add('visible');
         displayName.textContent = currentUser.fullName;
 
+        // Hide hint after login
+        userHint.classList.remove('visible');
+
         // Remember password if checked
         if (remember) {
             localStorage.setItem('rememberedCredentials', JSON.stringify({ username, password }));
@@ -827,6 +835,20 @@
         errorMsg.textContent = '';
         document.getElementById('rememberPassword').checked = false;
         localStorage.removeItem('currentUser');
+        
+        // Show hint only if username contains "admin"
+        checkHintVisibility();
+    }
+
+    // ---------- CHECK HINT VISIBILITY ----------
+    function checkHintVisibility() {
+        const username = usernameInput.value.trim();
+        // Show hint ONLY when the username contains "admin" (case insensitive)
+        if (username.toLowerCase().includes('admin')) {
+            userHint.classList.add('visible');
+        } else {
+            userHint.classList.remove('visible');
+        }
     }
 
     // ---------- SAVE / LOAD RECORDS ----------
@@ -1437,6 +1459,7 @@
                 usernameInput.value = lastUser;
             }
         }
+        checkHintVisibility();
     }
 
     // ---------- EVENT LISTENERS ----------
@@ -1456,6 +1479,9 @@
         }
     });
 
+    // Show/hide hint based on username input - only when "admin" is typed
+    usernameInput.addEventListener('input', checkHintVisibility);
+
     // ---------- INIT ----------
     // Check for remembered login
     checkRememberedLogin();
@@ -1463,6 +1489,7 @@
     // If no login, show login overlay
     if (!currentUser) {
         loginOverlay.classList.add('active');
+        checkHintVisibility();
     }
 
     renderReport([]);
