@@ -56,6 +56,99 @@
             transition: var(--transition);
         }
 
+        /* --- LOGIN STYLES --- */
+        .login-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-overlay.active {
+            display: flex;
+        }
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 340px;
+            max-width: 90%;
+        }
+        .login-box .logo-img {
+            height: 80px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .login-box h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: var(--gray-800);
+        }
+        .login-box input {
+            width: 100%;
+            padding: 10px 14px;
+            margin: 6px 0;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .login-box .remember-row {
+            text-align: left;
+            margin: 6px 0 10px 0;
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+        .login-box .remember-row input {
+            width: auto;
+            margin-right: 6px;
+        }
+        .login-box .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .login-box .login-btn:hover {
+            background: var(--primary-light);
+        }
+        .login-box .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .login-box .user-hint {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+        .login-box .user-hint span {
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             padding: 20px 32px;
@@ -73,8 +166,8 @@
         }
 
         .logo-placeholder {
-            width: 180px;
-            height: 70px;
+            width: 220px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -93,14 +186,14 @@
 
         .uni-name {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.7rem;
             color: white;
             letter-spacing: -0.02em;
             line-height: 1.2;
         }
         .uni-sub {
             font-weight: 400;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: rgba(255, 255, 255, 0.75);
             display: block;
             letter-spacing: 0.01em;
@@ -121,6 +214,14 @@
             letter-spacing: 0.02em;
         }
         .badge i { opacity: 0.8; }
+
+        /* --- App Content (hidden until login) --- */
+        .app-content {
+            display: none;
+        }
+        .app-content.visible {
+            display: block;
+        }
 
         .scan-area {
             background: var(--gray-50);
@@ -444,14 +545,43 @@
             margin: 0 6px;
         }
 
+        /* User info in header */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-info .user-name {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .user-info .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .user-info .logout-btn:hover {
+            background: #fd7e14;
+            transform: scale(1.03);
+        }
+
         @media (max-width: 768px) {
             body { padding: 12px; }
             .header { padding: 16px 20px; flex-direction: column; align-items: stretch; }
             .logo-area { gap: 14px; }
-            .logo-placeholder { width: 150px; height: 60px; }
-            .uni-name { font-size: 1.1rem; }
-            .uni-sub { font-size: 0.7rem; }
+            .logo-placeholder { width: 160px; height: 65px; }
+            .uni-name { font-size: 1.3rem; }
+            .uni-sub { font-size: 0.75rem; }
             .badge { align-self: flex-start; font-size: 0.65rem; }
+            .user-info { align-self: flex-start; }
             .scan-area { padding: 16px 20px; flex-direction: column; align-items: stretch; }
             .folder-input-group input { min-width: auto; }
             .search-section { width: 100%; }
@@ -461,21 +591,46 @@
             .footer-note { padding: 12px 16px; flex-direction: column; align-items: center; text-align: center; }
             .bottom-footer { padding: 14px 16px; }
             .bottom-footer p { font-size: 14px; }
+            .login-box { padding: 25px 20px; width: 300px; }
         }
 
         @media (max-width: 480px) {
-            .logo-placeholder { width: 120px; height: 50px; }
-            .uni-name { font-size: 0.95rem; }
-            .uni-sub { font-size: 0.6rem; }
+            .logo-placeholder { width: 130px; height: 55px; }
+            .uni-name { font-size: 1.1rem; }
+            .uni-sub { font-size: 0.65rem; }
             .auto-scan-btn { padding: 8px 16px; font-size: 0.75rem; }
             .file-status { font-size: 0.65rem; padding: 2px 10px; }
             .report-table th, .report-table td { padding: 6px 8px; font-size: 0.7rem; }
             .bottom-footer p { font-size: 13px; }
+            .login-box { padding: 20px 16px; width: 280px; }
+            .login-box .logo-img { height: 60px; }
         }
     </style>
 </head>
 <body>
-<div class="card">
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay active" id="loginOverlay">
+    <div class="login-box">
+        <img src="https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png" alt="CLFS Logo" class="logo-img">
+        <h2>Sign In</h2>
+        <form onsubmit="event.preventDefault(); login();" autocomplete="on">
+            <input type="text" id="username" placeholder="Username" autofocus>
+            <input type="password" id="password" placeholder="Password">
+            <div class="remember-row">
+                <input type="checkbox" id="rememberPassword"> Remember Password
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="error" id="errorMsg"></div>
+        <div class="user-hint">
+            <span>Hint:</span> admin / adm25
+        </div>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="card app-content" id="appContent">
     <header class="header">
         <div class="logo-area">
             <div class="logo-placeholder">
@@ -486,7 +641,10 @@
                 <span class="uni-sub">Center For Language and Foundation Studies</span>
             </div>
         </div>
-        <div class="badge"><i class="fas fa-file-alt"></i> Transfer Credits Tracker</div>
+        <div class="user-info" id="userInfo">
+            <span class="user-name" id="displayName">Welcome</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
     </header>
 
     <div class="scan-area">
@@ -535,79 +693,196 @@
 </div>
 
 <script>
-    (function() {
-        const reportList = document.getElementById('reportList');
-        const recordCount = document.getElementById('recordCount');
-        const folderPath = document.getElementById('folderPath');
-        const autoScanBtn = document.getElementById('autoScanBtn');
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const fileStatus = document.getElementById('fileStatus');
-        const progressFill = document.getElementById('progressFill');
+    // --- USER DATABASE ---
+    const users = {
+        "admin": {
+            "password": "adm25",
+            "role": "admin",
+            "approved": true,
+            "fullName": "Administrator",
+            "email": "admin@asu.edu.om"
+        },
+        "Hala": {
+            "password": "E560",
+            "role": "staff",
+            "approved": true,
+            "fullName": "Hala Al Badi",
+            "email": "hala.albadi@asu.edu.om"
+        },
+        "Nehad": {
+            "password": "E570",
+            "role": "staff",
+            "approved": true,
+            "fullName": "Nehad Al Harthi",
+            "email": "nehad.alharthi@asu.edu.om"
+        },
+        "Aris": {
+            "password": "E788",
+            "role": "staff",
+            "approved": true,
+            "fullName": "Aris Dahan",
+            "email": "aries.dahan@asu.edu.om"
+        },
+        "Waleed": {
+            "password": "E500",
+            "role": "staff",
+            "approved": true,
+            "fullName": "Dr. Waleed Al Harthy",
+            "email": "waleed.alharthy@asu.edu.om"
+        },
+        "Hameed": {
+            "password": "E98",
+            "role": "staff",
+            "approved": true,
+            "fullName": "Dr. Hameed Ur Rehman Khan",
+            "email": "h.rehman@asu.edu.om"
+        }
+    };
 
-        const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/TC-form.docx";
-        const LOGO_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png";
-        const PROVIDER_NAME = "Dr. Waleed Al Harthy";
+    let currentUser = null;
+    let allRecords = [];
+    let isScanning = false;
+    let folderHandle = null;
+    let folderPermissionGranted = false;
+    let lastSearchedId = "";
 
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    // --- DOM REFS ---
+    const loginOverlay = document.getElementById('loginOverlay');
+    const appContent = document.getElementById('appContent');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMsg = document.getElementById('errorMsg');
+    const displayName = document.getElementById('displayName');
+    const reportList = document.getElementById('reportList');
+    const recordCount = document.getElementById('recordCount');
+    const folderPath = document.getElementById('folderPath');
+    const autoScanBtn = document.getElementById('autoScanBtn');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const fileStatus = document.getElementById('fileStatus');
+    const progressFill = document.getElementById('progressFill');
 
-        document.querySelector('.logo-placeholder img').src = LOGO_URL;
+    // --- CONFIGURATION ---
+    const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/TC-form.docx";
+    const LOGO_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png";
+    const PROVIDER_NAME = "Dr. Waleed Al Harthy";
 
-        let allRecords = [];
-        let isScanning = false;
-        let folderHandle = null;
-        let folderPermissionGranted = false;
-        let lastSearchedId = "";
+    // Set PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        function parseDate(dateStr) {
-            if (!dateStr) return new Date(0);
-            const parts = dateStr.split('-');
-            if (parts.length === 3) {
-                const day = parseInt(parts[0], 10);
-                const month = parseInt(parts[1], 10) - 1;
-                const year = parseInt(parts[2], 10);
-                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                    return new Date(year, month, day);
-                }
-            }
-            return new Date(0);
+    // Update the logo dynamically
+    document.querySelector('.logo-placeholder img').src = LOGO_URL;
+
+    // ---------- LOGIN FUNCTIONS ----------
+    function login() {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+        const remember = document.getElementById('rememberPassword').checked;
+        
+        if (!username || !password) {
+            errorMsg.textContent = 'Please enter both username and password.';
+            return;
         }
 
-        // ---------- IMPROVED DATE EXTRACTION - TARGETS NAME/SIGNATURE ----------
-        function extractDateFromText(text) {
-            console.log("=== EXTRACTING DATE ===");
-            
-            // STRATEGY 1: Look for "NAME / SIGNATURE" and then find DATE right after it
-            const signaturePatterns = [
-                /NAME\s*\/\s*SIGNATURE\s*[:：]?\s*([^\n]*?)\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
-                /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
-                /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*([^\n\r,]+)/i,
-            ];
-            
-            for (const pattern of signaturePatterns) {
-                const match = text.match(pattern);
-                if (match) {
-                    let dateStr = match[2] || match[1];
-                    if (dateStr) {
-                        dateStr = dateStr.trim();
-                        console.log("Found date after NAME/SIGNATURE:", dateStr);
-                        const formatted = formatDate(dateStr);
-                        if (formatted) {
-                            console.log("Formatted date:", formatted);
-                            return formatted;
-                        }
-                    }
-                }
-            }
+        const user = users[username];
+        if (!user) {
+            errorMsg.textContent = 'Invalid username or password.';
+            return;
+        }
 
-            // STRATEGY 2: Look for DATE label that appears after NAME/SIGNATURE
-            const signatureIndex = text.search(/NAME\s*\/\s*SIGNATURE/i);
-            if (signatureIndex !== -1) {
-                const afterSignature = text.substring(signatureIndex);
-                const dateMatch = afterSignature.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
-                if (dateMatch && dateMatch[1]) {
-                    const dateStr = dateMatch[1].trim();
-                    console.log("Found DATE label after NAME/SIGNATURE:", dateStr);
+        if (user.password !== password) {
+            errorMsg.textContent = 'Invalid username or password.';
+            return;
+        }
+
+        if (!user.approved) {
+            errorMsg.textContent = 'Your account is not approved yet.';
+            return;
+        }
+
+        // Login successful
+        currentUser = { username, ...user };
+        errorMsg.textContent = '';
+        loginOverlay.classList.remove('active');
+        appContent.classList.add('visible');
+        displayName.textContent = currentUser.fullName;
+
+        // Remember password if checked
+        if (remember) {
+            localStorage.setItem('rememberedCredentials', JSON.stringify({ username, password }));
+        } else {
+            localStorage.removeItem('rememberedCredentials');
+            localStorage.setItem('lastUsername', username);
+        }
+
+        // Load any saved data
+        loadSavedRecords();
+    }
+
+    function logout() {
+        currentUser = null;
+        appContent.classList.remove('visible');
+        loginOverlay.classList.add('active');
+        passwordInput.value = '';
+        errorMsg.textContent = '';
+        document.getElementById('rememberPassword').checked = false;
+        localStorage.removeItem('currentUser');
+    }
+
+    // ---------- SAVE / LOAD RECORDS ----------
+    function saveRecords() {
+        try {
+            localStorage.setItem('tcRecords', JSON.stringify(allRecords));
+        } catch (e) {
+            console.warn('Could not save records:', e);
+        }
+    }
+
+    function loadSavedRecords() {
+        try {
+            const saved = localStorage.getItem('tcRecords');
+            if (saved) {
+                allRecords = JSON.parse(saved);
+                renderReport(allRecords);
+            }
+        } catch (e) {
+            console.warn('Could not load saved records:', e);
+        }
+    }
+
+    // ---------- PARSE DATE TO COMPARE ----------
+    function parseDate(dateStr) {
+        if (!dateStr) return new Date(0);
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                return new Date(year, month, day);
+            }
+        }
+        return new Date(0);
+    }
+
+    // ---------- IMPROVED DATE EXTRACTION - TARGETS NAME/SIGNATURE ----------
+    function extractDateFromText(text) {
+        console.log("=== EXTRACTING DATE ===");
+        
+        // STRATEGY 1: Look for "NAME / SIGNATURE" and then find DATE right after it
+        const signaturePatterns = [
+            /NAME\s*\/\s*SIGNATURE\s*[:：]?\s*([^\n]*?)\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
+            /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
+            /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*([^\n\r,]+)/i,
+        ];
+        
+        for (const pattern of signaturePatterns) {
+            const match = text.match(pattern);
+            if (match) {
+                let dateStr = match[2] || match[1];
+                if (dateStr) {
+                    dateStr = dateStr.trim();
+                    console.log("Found date after NAME/SIGNATURE:", dateStr);
                     const formatted = formatDate(dateStr);
                     if (formatted) {
                         console.log("Formatted date:", formatted);
@@ -615,519 +890,582 @@
                     }
                 }
             }
-
-            // STRATEGY 3: Look for HEAD OF DEPARTMENT section
-            const headDeptMatch = text.match(/HEAD\s*OF\s*DEPARTMENT[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
-            if (headDeptMatch && headDeptMatch[1]) {
-                const dateStr = headDeptMatch[1].trim();
-                console.log("Found date in HEAD OF DEPARTMENT:", dateStr);
-                const formatted = formatDate(dateStr);
-                if (formatted) return formatted;
-            }
-
-            // STRATEGY 4: Look for COLLEGE DEAN section
-            const deanMatch = text.match(/COLLEGE\s*DEAN[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
-            if (deanMatch && deanMatch[1]) {
-                const dateStr = deanMatch[1].trim();
-                console.log("Found date in COLLEGE DEAN:", dateStr);
-                const formatted = formatDate(dateStr);
-                if (formatted) return formatted;
-            }
-
-            // STRATEGY 5: Look for any DATE label
-            const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
-            if (dateLabelMatch && dateLabelMatch[1]) {
-                const dateStr = dateLabelMatch[1].trim();
-                console.log("Found date with DATE label:", dateStr);
-                const formatted = formatDate(dateStr);
-                if (formatted) return formatted;
-            }
-
-            // STRATEGY 6: Fallback - look for any date pattern
-            const fallbackPatterns = [
-                /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
-                /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
-            ];
-            for (const pattern of fallbackPatterns) {
-                const match = text.match(pattern);
-                if (match) {
-                    console.log("Found date with fallback pattern:", match[0]);
-                    const formatted = formatDate(match[0]);
-                    if (formatted) return formatted;
-                }
-            }
-
-            console.log("No date found, using today's date");
-            const today = new Date();
-            const d = String(today.getDate()).padStart(2, '0');
-            const m = String(today.getMonth() + 1).padStart(2, '0');
-            const y = today.getFullYear();
-            return `${d}-${m}-${y}`;
         }
 
-        // ---------- FORMAT DATE TO DD-MM-YYYY ----------
-        function formatDate(dateStr) {
-            if (!dateStr) return null;
-            dateStr = dateStr.trim().replace(/,/g, '');
-            
-            const monthNames = {
-                'january': '01', 'february': '02', 'march': '03', 'april': '04',
-                'may': '05', 'june': '06', 'july': '07', 'august': '08',
-                'september': '09', 'october': '10', 'november': '11', 'december': '12'
-            };
-            
-            // Try DD Month YYYY (e.g., 09 June 2026)
-            let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
-            if (match) {
-                const day = match[1].padStart(2, '0');
-                const month = monthNames[match[2].toLowerCase()];
-                const year = match[3];
-                console.log(`Formatted as: ${day}-${month}-${year}`);
-                return `${day}-${month}-${year}`;
-            }
-            
-            // Try DD-MM-YYYY or DD/MM-YYYY
-            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
-            if (match) {
-                console.log(`Formatted as: ${match[1]}-${match[2]}-${match[3]}`);
-                return `${match[1]}-${match[2]}-${match[3]}`;
-            }
-            
-            // Try DD-MM-YY or DD/MM-YY
-            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
-            if (match) {
-                const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
-                console.log(`Formatted as: ${match[1]}-${match[2]}-${year}`);
-                return `${match[1]}-${match[2]}-${year}`;
-            }
-            
-            console.log("Could not parse date:", dateStr);
-            return null;
-        }
-
-        // ---------- EXTRACT STUDENT NAME ----------
-        function extractStudentName(text) {
-            let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
-            if (match && match[1]) {
-                let name = match[1].trim().replace(/\s{2,}/g, ' ');
-                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
-                if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
-                    return name;
+        // STRATEGY 2: Look for DATE label that appears after NAME/SIGNATURE
+        const signatureIndex = text.search(/NAME\s*\/\s*SIGNATURE/i);
+        if (signatureIndex !== -1) {
+            const afterSignature = text.substring(signatureIndex);
+            const dateMatch = afterSignature.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
+            if (dateMatch && dateMatch[1]) {
+                const dateStr = dateMatch[1].trim();
+                console.log("Found DATE label after NAME/SIGNATURE:", dateStr);
+                const formatted = formatDate(dateStr);
+                if (formatted) {
+                    console.log("Formatted date:", formatted);
+                    return formatted;
                 }
             }
-            
-            match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
-            if (match && match[1]) {
-                let name = match[1].trim().replace(/\s{2,}/g, ' ');
-                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+        }
+
+        // STRATEGY 3: Look for HEAD OF DEPARTMENT section
+        const headDeptMatch = text.match(/HEAD\s*OF\s*DEPARTMENT[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
+        if (headDeptMatch && headDeptMatch[1]) {
+            const dateStr = headDeptMatch[1].trim();
+            console.log("Found date in HEAD OF DEPARTMENT:", dateStr);
+            const formatted = formatDate(dateStr);
+            if (formatted) return formatted;
+        }
+
+        // STRATEGY 4: Look for COLLEGE DEAN section
+        const deanMatch = text.match(/COLLEGE\s*DEAN[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
+        if (deanMatch && deanMatch[1]) {
+            const dateStr = deanMatch[1].trim();
+            console.log("Found date in COLLEGE DEAN:", dateStr);
+            const formatted = formatDate(dateStr);
+            if (formatted) return formatted;
+        }
+
+        // STRATEGY 5: Look for any DATE label
+        const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
+        if (dateLabelMatch && dateLabelMatch[1]) {
+            const dateStr = dateLabelMatch[1].trim();
+            console.log("Found date with DATE label:", dateStr);
+            const formatted = formatDate(dateStr);
+            if (formatted) return formatted;
+        }
+
+        // STRATEGY 6: Fallback - look for any date pattern
+        const fallbackPatterns = [
+            /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
+            /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
+        ];
+        for (const pattern of fallbackPatterns) {
+            const match = text.match(pattern);
+            if (match) {
+                console.log("Found date with fallback pattern:", match[0]);
+                const formatted = formatDate(match[0]);
+                if (formatted) return formatted;
+            }
+        }
+
+        console.log("No date found, using today's date");
+        const today = new Date();
+        const d = String(today.getDate()).padStart(2, '0');
+        const m = String(today.getMonth() + 1).padStart(2, '0');
+        const y = today.getFullYear();
+        return `${d}-${m}-${y}`;
+    }
+
+    // ---------- FORMAT DATE TO DD-MM-YYYY ----------
+    function formatDate(dateStr) {
+        if (!dateStr) return null;
+        dateStr = dateStr.trim().replace(/,/g, '');
+        
+        const monthNames = {
+            'january': '01', 'february': '02', 'march': '03', 'april': '04',
+            'may': '05', 'june': '06', 'july': '07', 'august': '08',
+            'september': '09', 'october': '10', 'november': '11', 'december': '12'
+        };
+        
+        // Try DD Month YYYY (e.g., 09 June 2026)
+        let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
+        if (match) {
+            const day = match[1].padStart(2, '0');
+            const month = monthNames[match[2].toLowerCase()];
+            const year = match[3];
+            console.log(`Formatted as: ${day}-${month}-${year}`);
+            return `${day}-${month}-${year}`;
+        }
+        
+        // Try DD-MM-YYYY or DD/MM-YYYY
+        match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
+        if (match) {
+            console.log(`Formatted as: ${match[1]}-${match[2]}-${match[3]}`);
+            return `${match[1]}-${match[2]}-${match[3]}`;
+        }
+        
+        // Try DD-MM-YY or DD/MM-YY
+        match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
+        if (match) {
+            const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
+            console.log(`Formatted as: ${match[1]}-${match[2]}-${year}`);
+            return `${match[1]}-${match[2]}-${year}`;
+        }
+        
+        console.log("Could not parse date:", dateStr);
+        return null;
+    }
+
+    // ---------- EXTRACT STUDENT NAME ----------
+    function extractStudentName(text) {
+        let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
+        if (match && match[1]) {
+            let name = match[1].trim().replace(/\s{2,}/g, ' ');
+            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+            if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
+                return name;
+            }
+        }
+        
+        match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
+        if (match && match[1]) {
+            let name = match[1].trim().replace(/\s{2,}/g, ' ');
+            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+            if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
+                return name;
+            }
+        }
+        
+        const lines = text.split(/[\n\.]/);
+        for (let i = 0; i < Math.min(5, lines.length); i++) {
+            const line = lines[i].trim();
+            if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
+                const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
+                let isExcluded = false;
+                for (const word of excludeWords) {
+                    if (line.match(new RegExp(word, 'i'))) {
+                        isExcluded = true;
+                        break;
+                    }
+                }
+                if (!isExcluded) {
+                    return line;
+                }
+            }
+        }
+        
+        const studentIndex = text.search(/\bStudent\b/i);
+        if (studentIndex !== -1) {
+            const afterStudent = text.substring(studentIndex + 7);
+            const nameMatch = afterStudent.match(/^[^,.\n]*/);
+            if (nameMatch) {
+                let name = nameMatch[0].trim();
+                name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
                 if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
                     return name;
                 }
             }
-            
-            const lines = text.split(/[\n\.]/);
-            for (let i = 0; i < Math.min(5, lines.length); i++) {
-                const line = lines[i].trim();
-                if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
-                    const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
-                    let isExcluded = false;
-                    for (const word of excludeWords) {
-                        if (line.match(new RegExp(word, 'i'))) {
-                            isExcluded = true;
-                            break;
-                        }
-                    }
-                    if (!isExcluded) {
-                        return line;
-                    }
-                }
-            }
-            
-            const studentIndex = text.search(/\bStudent\b/i);
-            if (studentIndex !== -1) {
-                const afterStudent = text.substring(studentIndex + 7);
-                const nameMatch = afterStudent.match(/^[^,.\n]*/);
-                if (nameMatch) {
-                    let name = nameMatch[0].trim();
-                    name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
-                    if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
-                        return name;
-                    }
-                }
-            }
-            
-            return "Unknown Student";
         }
+        
+        return "Unknown Student";
+    }
 
-        // ---------- EXTRACT DATA FROM DOCX ----------
-        async function extractFromDocx(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        const arrayBuffer = e.target.result;
-                        const result = await mammoth.extractRawText({ arrayBuffer });
-                        const text = result.value;
-                        console.log("=== DOCX TEXT ===");
-                        console.log(text.substring(0, 800));
-                        console.log("=== END DOCX TEXT ===");
-                        resolve({
-                            studentName: extractStudentName(text),
-                            date: extractDateFromText(text)
-                        });
-                    } catch (error) {
-                        console.error("Error parsing DOCX:", error);
-                        resolve(null);
-                    }
-                };
-                reader.onerror = function() {
-                    console.error("FileReader error for DOCX");
-                    resolve(null);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
-        // ---------- EXTRACT DATA FROM PDF ----------
-        async function extractFromPdf(file) {
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                
-                let fullText = '';
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += pageText + '\n';
-                }
-                
-                console.log("=== PDF TEXT ===");
-                console.log(fullText.substring(0, 800));
-                console.log("=== END PDF TEXT ===");
-                
-                return {
-                    studentName: extractStudentName(fullText),
-                    date: extractDateFromText(fullText)
-                };
-            } catch (error) {
-                console.error("Error parsing PDF:", error);
-                return null;
-            }
-        }
-
-        // ---------- EXTRACT DATA FROM FILE ----------
-        async function extractRecordsFromFile(file) {
-            return new Promise((resolve) => {
-                const nameMatch = file.name.match(/^TC-(\d{6,8})\.(docx|pdf)$/i);
-                if (!nameMatch) {
-                    resolve(null);
-                    return;
-                }
-
-                const studentIdFromFilename = nameMatch[1];
-                const fileExt = nameMatch[2].toLowerCase();
-                
-                let extractPromise;
-                if (fileExt === 'docx') {
-                    extractPromise = extractFromDocx(file);
-                } else if (fileExt === 'pdf') {
-                    extractPromise = extractFromPdf(file);
-                } else {
-                    resolve(null);
-                    return;
-                }
-                
-                extractPromise.then(result => {
-                    if (result) {
-                        resolve({
-                            studentName: result.studentName,
-                            studentId: studentIdFromFilename,
-                            date: result.date,
-                            issuer: PROVIDER_NAME,
-                            fileName: file.name
-                        });
-                    } else {
-                        resolve({
-                            studentName: "Unknown (Extraction failed)",
-                            studentId: studentIdFromFilename,
-                            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
-                            issuer: PROVIDER_NAME,
-                            fileName: file.name
-                        });
-                    }
-                }).catch(error => {
-                    console.error("Extraction error:", error);
-                    resolve(null);
-                });
-            });
-        }
-
-        // ---------- DOWNLOAD FORM ----------
-        function downloadFormWithName(studentId) {
-            if (!studentId || studentId === "ID") {
-                alert('Please enter a valid Student ID (6-8 digits) first.');
-                return;
-            }
-
-            fetch(FORM_TEMPLATE_URL)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch template: ' + response.status);
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `TC-${studentId}.docx`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                    
-                    fileStatus.textContent = `✅ Downloaded as TC-${studentId}.docx`;
-                    fileStatus.style.background = "#e6f5e6";
-                })
-                .catch(error => {
-                    console.error('Download error:', error);
-                    alert('Could not download the template. Please check the URL and try again.');
-                });
-        }
-
-        // ---------- SCAN FOLDER ----------
-        async function scanFolderWithPermission() {
-            if (isScanning) return;
-            
-            try {
-                if (folderHandle && folderPermissionGranted) {
-                    await scanFolderHandle(folderHandle);
-                    return;
-                }
-                
-                folderHandle = await window.showDirectoryPicker();
-                const permission = await folderHandle.requestPermission({ mode: 'read' });
-                if (permission !== 'granted') {
-                    fileStatus.textContent = '⚠️ Permission denied';
-                    fileStatus.style.background = "#fff3d6";
-                    return;
-                }
-                
-                folderPermissionGranted = true;
-                folderPath.value = '📁 Folder selected';
-                folderPath.style.color = '#0b2b4a';
-                await scanFolderHandle(folderHandle);
-                
-            } catch (error) {
-                if (error.name !== 'AbortError' && error.name !== 'SecurityError') {
-                    console.error("Error accessing folder:", error);
-                    fileStatus.textContent = `⚠️ ${error.message}`;
-                    fileStatus.style.background = "#fff3d6";
-                } else {
-                    fileStatus.textContent = `📂 Cancelled`;
-                    fileStatus.style.background = "#eaf1fb";
-                }
-            }
-        }
-
-        // ---------- SCAN FOLDER HANDLE ----------
-        async function scanFolderHandle(handle) {
-            fileStatus.textContent = `⏳ Scanning...`;
-            fileStatus.style.background = "#fff3d6";
-            autoScanBtn.disabled = true;
-            isScanning = true;
-            progressFill.style.width = '0%';
-            
-            const entries = [];
-            for await (const entry of handle.values()) {
-                if (entry.kind === 'file') {
-                    entries.push(entry);
-                }
-            }
-            
-            const tcFiles = entries.filter(entry => {
-                return entry.name.match(/^TC-\d{6,8}\.(docx|pdf)$/i);
-            });
-            
-            if (tcFiles.length === 0) {
-                fileStatus.textContent = `⚠️ No TC files found (looking for TC-{ID}.docx or .pdf)`;
-                fileStatus.style.background = "#fff3d6";
-                autoScanBtn.disabled = false;
-                isScanning = false;
-                progressFill.style.width = '100%';
-                return;
-            }
-            
-            fileStatus.textContent = `⏳ Processing ${tcFiles.length} files...`;
-            
-            const idMap = new Map();
-            let processed = 0;
-            
-            for (const entry of tcFiles) {
+    // ---------- EXTRACT DATA FROM DOCX ----------
+    async function extractFromDocx(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
                 try {
-                    const file = await entry.getFile();
-                    const record = await extractRecordsFromFile(file);
-                    if (record) {
-                        const existing = idMap.get(record.studentId);
-                        if (!existing || (file.name.endsWith('.docx') && existing.fileName.endsWith('.pdf'))) {
-                            idMap.set(record.studentId, record);
-                        }
-                    }
-                    processed++;
-                    const percent = (processed / tcFiles.length) * 100;
-                    progressFill.style.width = `${percent}%`;
-                    fileStatus.textContent = `⏳ ${processed}/${tcFiles.length}`;
-                } catch (e) {
-                    console.error("Error processing file:", entry.name, e);
+                    const arrayBuffer = e.target.result;
+                    const result = await mammoth.extractRawText({ arrayBuffer });
+                    const text = result.value;
+                    console.log("=== DOCX TEXT ===");
+                    console.log(text.substring(0, 800));
+                    console.log("=== END DOCX TEXT ===");
+                    resolve({
+                        studentName: extractStudentName(text),
+                        date: extractDateFromText(text)
+                    });
+                } catch (error) {
+                    console.error("Error parsing DOCX:", error);
+                    resolve(null);
                 }
+            };
+            reader.onerror = function() {
+                console.error("FileReader error for DOCX");
+                resolve(null);
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    // ---------- EXTRACT DATA FROM PDF ----------
+    async function extractFromPdf(file) {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + '\n';
             }
             
-            const uniqueRecords = Array.from(idMap.values());
+            console.log("=== PDF TEXT ===");
+            console.log(fullText.substring(0, 800));
+            console.log("=== END PDF TEXT ===");
             
-            const existingIds = new Set(allRecords.map(r => r.studentId));
-            for (const rec of uniqueRecords) {
-                if (!existingIds.has(rec.studentId)) {
-                    allRecords.push(rec);
-                    existingIds.add(rec.studentId);
-                }
+            return {
+                studentName: extractStudentName(fullText),
+                date: extractDateFromText(fullText)
+            };
+        } catch (error) {
+            console.error("Error parsing PDF:", error);
+            return null;
+        }
+    }
+
+    // ---------- EXTRACT DATA FROM FILE ----------
+    async function extractRecordsFromFile(file) {
+        return new Promise((resolve) => {
+            const nameMatch = file.name.match(/^TC-(\d{6,8})\.(docx|pdf)$/i);
+            if (!nameMatch) {
+                resolve(null);
+                return;
+            }
+
+            const studentIdFromFilename = nameMatch[1];
+            const fileExt = nameMatch[2].toLowerCase();
+            
+            let extractPromise;
+            if (fileExt === 'docx') {
+                extractPromise = extractFromDocx(file);
+            } else if (fileExt === 'pdf') {
+                extractPromise = extractFromPdf(file);
+            } else {
+                resolve(null);
+                return;
             }
             
-            fileStatus.textContent = `✅ ${allRecords.length} records extracted from ${tcFiles.length} file(s)`;
-            fileStatus.style.background = "#e6f5e6";
-            renderReport(allRecords);
+            extractPromise.then(result => {
+                if (result) {
+                    resolve({
+                        studentName: result.studentName,
+                        studentId: studentIdFromFilename,
+                        date: result.date,
+                        issuer: PROVIDER_NAME,
+                        fileName: file.name
+                    });
+                } else {
+                    resolve({
+                        studentName: "Unknown (Extraction failed)",
+                        studentId: studentIdFromFilename,
+                        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
+                        issuer: PROVIDER_NAME,
+                        fileName: file.name
+                    });
+                }
+            }).catch(error => {
+                console.error("Extraction error:", error);
+                resolve(null);
+            });
+        });
+    }
+
+    // ---------- DOWNLOAD FORM ----------
+    function downloadFormWithName(studentId) {
+        if (!studentId || studentId === "ID") {
+            alert('Please enter a valid Student ID (6-8 digits) first.');
+            return;
+        }
+
+        fetch(FORM_TEMPLATE_URL)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch template: ' + response.status);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `TC-${studentId}.docx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                fileStatus.textContent = `✅ Downloaded as TC-${studentId}.docx`;
+                fileStatus.style.background = "#e6f5e6";
+            })
+            .catch(error => {
+                console.error('Download error:', error);
+                alert('Could not download the template. Please check the URL and try again.');
+            });
+    }
+
+    // ---------- SCAN FOLDER ----------
+    async function scanFolderWithPermission() {
+        if (isScanning) return;
+        
+        try {
+            if (folderHandle && folderPermissionGranted) {
+                await scanFolderHandle(folderHandle);
+                return;
+            }
             
+            folderHandle = await window.showDirectoryPicker();
+            const permission = await folderHandle.requestPermission({ mode: 'read' });
+            if (permission !== 'granted') {
+                fileStatus.textContent = '⚠️ Permission denied';
+                fileStatus.style.background = "#fff3d6";
+                return;
+            }
+            
+            folderPermissionGranted = true;
+            folderPath.value = '📁 Folder selected';
+            folderPath.style.color = '#0b2b4a';
+            await scanFolderHandle(folderHandle);
+            
+        } catch (error) {
+            if (error.name !== 'AbortError' && error.name !== 'SecurityError') {
+                console.error("Error accessing folder:", error);
+                fileStatus.textContent = `⚠️ ${error.message}`;
+                fileStatus.style.background = "#fff3d6";
+            } else {
+                fileStatus.textContent = `📂 Cancelled`;
+                fileStatus.style.background = "#eaf1fb";
+            }
+        }
+    }
+
+    // ---------- SCAN FOLDER HANDLE ----------
+    async function scanFolderHandle(handle) {
+        fileStatus.textContent = `⏳ Scanning...`;
+        fileStatus.style.background = "#fff3d6";
+        autoScanBtn.disabled = true;
+        isScanning = true;
+        progressFill.style.width = '0%';
+        
+        const entries = [];
+        for await (const entry of handle.values()) {
+            if (entry.kind === 'file') {
+                entries.push(entry);
+            }
+        }
+        
+        const tcFiles = entries.filter(entry => {
+            return entry.name.match(/^TC-\d{6,8}\.(docx|pdf)$/i);
+        });
+        
+        if (tcFiles.length === 0) {
+            fileStatus.textContent = `⚠️ No TC files found (looking for TC-{ID}.docx or .pdf)`;
+            fileStatus.style.background = "#fff3d6";
             autoScanBtn.disabled = false;
             isScanning = false;
-            setTimeout(() => {
-                progressFill.style.width = '0%';
-            }, 1000);
+            progressFill.style.width = '100%';
+            return;
         }
-
-        // ---------- RENDER FUNCTION ----------
-        function renderReport(formsArray) {
-            reportList.innerHTML = '';
-
-            if (!formsArray || formsArray.length === 0) {
-                const notFoundDiv = document.createElement('div');
-                notFoundDiv.className = 'not-found-message';
-                
-                const searchQuery = searchInput.value.trim();
-                let formId = searchQuery;
-                if (formId.match(/^\d{6,8}$/)) {
-                    lastSearchedId = formId;
-                } else if (lastSearchedId) {
-                    formId = lastSearchedId;
-                } else {
-                    formId = "ID";
+        
+        fileStatus.textContent = `⏳ Processing ${tcFiles.length} files...`;
+        
+        const idMap = new Map();
+        let processed = 0;
+        
+        for (const entry of tcFiles) {
+            try {
+                const file = await entry.getFile();
+                const record = await extractRecordsFromFile(file);
+                if (record) {
+                    const existing = idMap.get(record.studentId);
+                    if (!existing || (file.name.endsWith('.docx') && existing.fileName.endsWith('.pdf'))) {
+                        idMap.set(record.studentId, record);
+                    }
                 }
-                
-                notFoundDiv.innerHTML = `
-                    <i class="fas fa-file-alt" style="font-size: 1.5rem; display: block; margin-bottom: 8px; color: #b38b6d;"></i>
-                    <strong style="font-style: normal; color: #2d1f14;">TC record not found</strong> 
-                    for “${searchInput.value || 'this student'}”.
-                    <div class="action-group">
-                        <button class="action-btn download-btn" id="downloadTcBtn"><i class="fas fa-download"></i> Download Form (TC-${formId}.docx)</button>
-                    </div>
-                    <div style="margin-top: 6px; font-size: 0.75rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
-                        <i class="fas fa-info-circle"></i> The form will be downloaded as "TC-${formId}.docx"
-                    </div>
-                `;
-                reportList.appendChild(notFoundDiv);
-                recordCount.textContent = `0 records`;
-                
-                document.getElementById('downloadTcBtn')?.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    downloadFormWithName(formId);
-                });
-                return;
+                processed++;
+                const percent = (processed / tcFiles.length) * 100;
+                progressFill.style.width = `${percent}%`;
+                fileStatus.textContent = `⏳ ${processed}/${tcFiles.length}`;
+            } catch (e) {
+                console.error("Error processing file:", entry.name, e);
             }
+        }
+        
+        const uniqueRecords = Array.from(idMap.values());
+        
+        const existingIds = new Set(allRecords.map(r => r.studentId));
+        for (const rec of uniqueRecords) {
+            if (!existingIds.has(rec.studentId)) {
+                allRecords.push(rec);
+                existingIds.add(rec.studentId);
+            }
+        }
+        
+        fileStatus.textContent = `✅ ${allRecords.length} records extracted from ${tcFiles.length} file(s)`;
+        fileStatus.style.background = "#e6f5e6";
+        renderReport(allRecords);
+        saveRecords();
+        
+        autoScanBtn.disabled = false;
+        isScanning = false;
+        setTimeout(() => {
+            progressFill.style.width = '0%';
+        }, 1000);
+    }
 
-            const sorted = [...formsArray].sort((a, b) => {
-                const dateA = parseDate(a.date);
-                const dateB = parseDate(b.date);
-                return dateB - dateA;
-            });
+    // ---------- RENDER FUNCTION ----------
+    function renderReport(formsArray) {
+        reportList.innerHTML = '';
 
-            const table = document.createElement('table');
-            table.className = 'report-table';
+        if (!formsArray || formsArray.length === 0) {
+            const notFoundDiv = document.createElement('div');
+            notFoundDiv.className = 'not-found-message';
             
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            const headers = ['S. No.', "Student's Name", 'ID Number', 'TC Date', 'Provider', 'File Name'];
-            headers.forEach(text => {
-                const th = document.createElement('th');
-                th.textContent = text;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
+            const searchQuery = searchInput.value.trim();
+            let formId = searchQuery;
+            if (formId.match(/^\d{6,8}$/)) {
+                lastSearchedId = formId;
+            } else if (lastSearchedId) {
+                formId = lastSearchedId;
+            } else {
+                formId = "ID";
+            }
             
-            const tbody = document.createElement('tbody');
-            sorted.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                
-                const snoTd = document.createElement('td');
-                snoTd.className = 'sno-col';
-                snoTd.textContent = index + 1;
-                tr.appendChild(snoTd);
-                
-                const nameTd = document.createElement('td');
-                nameTd.textContent = item.studentName;
-                tr.appendChild(nameTd);
-                
-                const idTd = document.createElement('td');
-                idTd.textContent = item.studentId;
-                tr.appendChild(idTd);
-                
-                const dateTd = document.createElement('td');
-                dateTd.textContent = item.date;
-                tr.appendChild(dateTd);
-                
-                const providerTd = document.createElement('td');
-                providerTd.textContent = PROVIDER_NAME;
-                tr.appendChild(providerTd);
-                
-                const fileTd = document.createElement('td');
-                fileTd.className = 'file-name-col';
-                const fileExt = item.fileName ? item.fileName.split('.').pop().toUpperCase() : '';
-                fileTd.innerHTML = `${item.fileName || ''} <span class="file-type-badge">${fileExt}</span>`;
-                tr.appendChild(fileTd);
-                
-                tbody.appendChild(tr);
+            notFoundDiv.innerHTML = `
+                <i class="fas fa-file-alt" style="font-size: 1.5rem; display: block; margin-bottom: 8px; color: #b38b6d;"></i>
+                <strong style="font-style: normal; color: #2d1f14;">TC record not found</strong> 
+                for “${searchInput.value || 'this student'}”.
+                <div class="action-group">
+                    <button class="action-btn download-btn" id="downloadTcBtn"><i class="fas fa-download"></i> Download Form (TC-${formId}.docx)</button>
+                </div>
+                <div style="margin-top: 6px; font-size: 0.75rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
+                    <i class="fas fa-info-circle"></i> The form will be downloaded as "TC-${formId}.docx"
+                </div>
+            `;
+            reportList.appendChild(notFoundDiv);
+            recordCount.textContent = `0 records`;
+            
+            document.getElementById('downloadTcBtn')?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                downloadFormWithName(formId);
             });
-            table.appendChild(tbody);
-            reportList.appendChild(table);
-            recordCount.textContent = `${sorted.length} record${sorted.length > 1 ? 's' : ''}`;
+            return;
         }
 
-        // ---------- SEARCH ----------
-        function performSearch() {
-            const query = searchInput.value.trim().toLowerCase();
+        // Sort by date from newest to oldest
+        const sorted = [...formsArray].sort((a, b) => {
+            const dateA = parseDate(a.date);
+            const dateB = parseDate(b.date);
+            return dateB - dateA;
+        });
+
+        const table = document.createElement('table');
+        table.className = 'report-table';
+        
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headers = ['S. No.', "Student's Name", 'ID Number', 'TC Date', 'Provider', 'File Name'];
+        headers.forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        const tbody = document.createElement('tbody');
+        sorted.forEach((item, index) => {
+            const tr = document.createElement('tr');
             
-            const idMatch = query.match(/\d{6,8}/);
-            if (idMatch) {
-                lastSearchedId = idMatch[0];
-            }
+            const snoTd = document.createElement('td');
+            snoTd.className = 'sno-col';
+            snoTd.textContent = index + 1;
+            tr.appendChild(snoTd);
             
-            if (!query) {
-                renderReport(allRecords);
-                return;
-            }
-            const filtered = allRecords.filter(item => 
-                item.studentName.toLowerCase().includes(query) || 
-                item.studentId.includes(query)
-            );
-            renderReport(filtered);
+            const nameTd = document.createElement('td');
+            nameTd.textContent = item.studentName;
+            tr.appendChild(nameTd);
+            
+            const idTd = document.createElement('td');
+            idTd.textContent = item.studentId;
+            tr.appendChild(idTd);
+            
+            const dateTd = document.createElement('td');
+            dateTd.textContent = item.date;
+            tr.appendChild(dateTd);
+            
+            const providerTd = document.createElement('td');
+            providerTd.textContent = PROVIDER_NAME;
+            tr.appendChild(providerTd);
+            
+            const fileTd = document.createElement('td');
+            fileTd.className = 'file-name-col';
+            const fileExt = item.fileName ? item.fileName.split('.').pop().toUpperCase() : '';
+            fileTd.innerHTML = `${item.fileName || ''} <span class="file-type-badge">${fileExt}</span>`;
+            tr.appendChild(fileTd);
+            
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        reportList.appendChild(table);
+        recordCount.textContent = `${sorted.length} record${sorted.length > 1 ? 's' : ''}`;
+    }
+
+    // ---------- SEARCH ----------
+    function performSearch() {
+        const query = searchInput.value.trim().toLowerCase();
+        
+        const idMatch = query.match(/\d{6,8}/);
+        if (idMatch) {
+            lastSearchedId = idMatch[0];
         }
+        
+        if (!query) {
+            renderReport(allRecords);
+            return;
+        }
+        const filtered = allRecords.filter(item => 
+            item.studentName.toLowerCase().includes(query) || 
+            item.studentId.includes(query)
+        );
+        renderReport(filtered);
+    }
 
-        // ---------- EVENT LISTENERS ----------
-        autoScanBtn.addEventListener('click', scanFolderWithPermission);
-        searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(); });
+    // ---------- CHECK REMEMBERED LOGIN ----------
+    function checkRememberedLogin() {
+        const remembered = localStorage.getItem('rememberedCredentials');
+        if (remembered) {
+            try {
+                const creds = JSON.parse(remembered);
+                usernameInput.value = creds.username || '';
+                passwordInput.value = creds.password || '';
+                document.getElementById('rememberPassword').checked = true;
+                // Auto-login
+                setTimeout(() => {
+                    login();
+                }, 300);
+            } catch (e) {
+                console.warn('Could not parse remembered credentials:', e);
+            }
+        } else {
+            const lastUser = localStorage.getItem('lastUsername');
+            if (lastUser) {
+                usernameInput.value = lastUser;
+            }
+        }
+    }
 
-        renderReport([]);
-    })();
+    // ---------- EVENT LISTENERS ----------
+    autoScanBtn.addEventListener('click', scanFolderWithPermission);
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(); });
+
+    // Enter key on login
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            login();
+        }
+    });
+    usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            passwordInput.focus();
+        }
+    });
+
+    // ---------- INIT ----------
+    // Check for remembered login
+    checkRememberedLogin();
+
+    // If no login, show login overlay
+    if (!currentUser) {
+        loginOverlay.classList.add('active');
+    }
+
+    renderReport([]);
 </script>
 </body>
 </html>
