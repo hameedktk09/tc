@@ -12,122 +12,126 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #f4f7fc; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .card { max-width: 1100px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25); padding: 30px 35px; transition: 0.2s; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 18px; flex-wrap: wrap; gap: 12px; }
-        .logo-area { display: flex; align-items: center; gap: 18px; }
-        .logo-placeholder { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .logo-area { display: flex; align-items: center; gap: 14px; }
+        .logo-placeholder { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        .uni-name { font-weight: 700; font-size: 1.6rem; color: #0b2b4a; letter-spacing: -0.5px; line-height: 1.2; }
-        .uni-sub { font-weight: 400; font-size: 1.0rem; color: #1f4b77; display: block; letter-spacing: -0.2px; }
-        .badge { background: #eef3fa; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; color: #1f3a5f; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .scan-area { background: #f9faff; border-radius: 28px; padding: 28px 25px; margin: 28px 0 20px 0; border: 1px dashed #b7c9e2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px; }
-        .folder-input-group { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex: 1; }
+        .uni-name { font-weight: 700; font-size: 1.3rem; color: #0b2b4a; letter-spacing: -0.3px; line-height: 1.1; }
+        .uni-sub { font-weight: 400; font-size: 0.85rem; color: #1f4b77; display: block; letter-spacing: -0.1px; }
+        .badge { background: #eef3fa; padding: 6px 14px; border-radius: 40px; font-size: 0.75rem; color: #1f3a5f; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .scan-area { background: #f9faff; border-radius: 24px; padding: 20px 22px; margin: 20px 0 15px 0; border: 1px dashed #b7c9e2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+        .folder-input-group { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; flex: 1; }
         .folder-input-group input { 
             flex: 1; 
-            min-width: 300px; 
-            padding: 12px 18px; 
+            min-width: 250px; 
+            padding: 10px 16px; 
             border: 1px solid #d6e0ed; 
             border-radius: 60px; 
-            font-size: 0.95rem; 
+            font-size: 0.9rem; 
             background: #f5f8fc; 
             color: #5c7390;
             cursor: default;
             user-select: none;
         }
         .folder-input-group input:focus { outline: none; border-color: #0b2b4a; }
-        .auto-scan-btn { background: #0b2b4a; color: white; border: none; padding: 12px 28px; border-radius: 60px; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.15s; box-shadow: 0 4px 10px rgba(11,43,74,0.15); }
+        .auto-scan-btn { background: #0b2b4a; color: white; border: none; padding: 10px 22px; border-radius: 60px; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.15s; box-shadow: 0 4px 10px rgba(11,43,74,0.15); }
         .auto-scan-btn:hover { background: #1e3f62; transform: scale(1.01); }
         .auto-scan-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .search-section { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: white; padding: 4px 8px 4px 18px; border-radius: 60px; border: 1px solid #d6e0ed; }
-        .search-section input { border: none; padding: 8px 5px; font-size: 0.95rem; min-width: 150px; outline: none; background: transparent; }
-        .search-section button { background: #eef3fa; border: none; padding: 6px 16px; border-radius: 40px; font-weight: 500; color: #1f3a5f; cursor: pointer; transition: 0.1s; }
+        .search-section { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; background: white; padding: 3px 6px 3px 14px; border-radius: 60px; border: 1px solid #d6e0ed; }
+        .search-section input { border: none; padding: 6px 4px; font-size: 0.9rem; min-width: 130px; outline: none; background: transparent; }
+        .search-section button { background: #eef3fa; border: none; padding: 5px 14px; border-radius: 40px; font-weight: 500; color: #1f3a5f; cursor: pointer; transition: 0.1s; font-size: 0.85rem; }
         .search-section button:hover { background: #dce5f0; }
-        .report-container { background: #ffffff; border-radius: 20px; padding: 10px 0 5px 0; }
-        .report-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; }
-        .report-header h2 { font-weight: 600; font-size: 1.5rem; color: #0b1f33; display: flex; align-items: center; gap: 10px; }
+        .report-container { background: #ffffff; border-radius: 20px; padding: 8px 0 4px 0; }
+        .report-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; }
+        .report-header h2 { font-weight: 600; font-size: 1.2rem; color: #0b1f33; display: flex; align-items: center; gap: 8px; }
         .report-header h2 i { color: #2b6c9e; }
-        .record-count { background: #dce5f0; padding: 4px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; color: #1e3d60; }
-        .report-list { background: #f8faff; border-radius: 18px; padding: 12px 0; min-height: 130px; border: 1px solid #e4ebf5; overflow-x: auto; }
+        .record-count { background: #dce5f0; padding: 3px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 500; color: #1e3d60; }
+        .report-list { background: #f8faff; border-radius: 16px; padding: 8px 0; min-height: 100px; border: 1px solid #e4ebf5; overflow-x: auto; }
         .report-table {
             width: 100%;
             border-collapse: collapse;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            font-size: 11pt;
         }
         .report-table th {
             background: #0b2b4a;
             color: white;
-            padding: 12px 16px;
+            padding: 8px 12px;
             text-align: left;
             font-weight: 600;
             border-bottom: 2px solid #0b2b4a;
             white-space: nowrap;
+            font-size: 11pt;
         }
         .report-table td {
-            padding: 10px 16px;
+            padding: 8px 12px;
             border-bottom: 1px solid #e6edf6;
             vertical-align: middle;
+            font-size: 11pt;
         }
         .report-table tr:hover td {
             background: #f0f6ff;
         }
         .report-table .file-name-col {
             font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 9pt;
+            font-size: 8pt;
             color: #7a8fa5;
         }
         .report-table .sno-col {
             color: #5c7390;
             font-weight: 500;
             text-align: center;
-            width: 50px;
+            width: 40px;
             white-space: nowrap;
         }
         .empty-message, .not-found-message { 
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            font-size: 11pt;
             color: #5c7390; 
-            padding: 32px 20px; 
+            padding: 25px 20px; 
             text-align: center; 
             font-style: italic; 
         }
-        .not-found-message { background: #fff6f0; border-radius: 18px; border: 1px solid #ffe4d6; }
+        .not-found-message { background: #fff6f0; border-radius: 16px; border: 1px solid #ffe4d6; }
         .action-btn { 
             font-family: 'Segoe UI', Arial, sans-serif;
             background: #0b2b4a; 
             color: white; 
             border: none; 
-            padding: 8px 22px; 
+            padding: 6px 18px; 
             border-radius: 40px; 
             font-weight: 500; 
             cursor: pointer; 
             transition: 0.1s; 
             display: inline-flex; 
             align-items: center; 
-            gap: 8px; 
-            margin: 5px; 
+            gap: 6px; 
+            margin: 4px; 
+            font-size: 0.85rem;
         }
         .action-btn:hover { background: #1e3f62; }
-        .action-btn i { font-size: 0.9rem; }
-        .file-status { font-size: 0.85rem; color: #2f6b9e; background: #eaf1fb; padding: 4px 14px; border-radius: 30px; font-family: 'Segoe UI', Arial, sans-serif; }
-        .footer-note { margin-top: 20px; font-size: 0.8rem; color: #4c6990; text-align: right; border-top: 1px solid #e2ebf5; padding-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; font-family: 'Segoe UI', Arial, sans-serif; }
-        .sample-logo { display: flex; align-items: center; gap: 6px; }
-        .sample-logo i { font-size: 1.4rem; color: #1f4b77; }
-        .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
-        .progress-bar { width: 100%; height: 4px; background: #e0e7ef; border-radius: 4px; margin: 8px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: #0b2b4a; width: 0%; transition: width 0.3s; border-radius: 4px; }
+        .action-btn i { font-size: 0.85rem; }
+        .file-status { font-size: 0.75rem; color: #2f6b9e; background: #eaf1fb; padding: 3px 12px; border-radius: 30px; font-family: 'Segoe UI', Arial, sans-serif; }
+        .footer-note { margin-top: 15px; font-size: 0.75rem; color: #4c6990; text-align: right; border-top: 1px solid #e2ebf5; padding-top: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; font-family: 'Segoe UI', Arial, sans-serif; }
+        .sample-logo { display: flex; align-items: center; gap: 5px; }
+        .sample-logo i { font-size: 1.1rem; color: #1f4b77; }
+        .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+        .progress-bar { width: 100%; height: 3px; background: #e0e7ef; border-radius: 3px; margin: 6px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #0b2b4a; width: 0%; transition: width 0.3s; border-radius: 3px; }
         .download-btn { background: #1a764a; }
         .download-btn:hover { background: #145d3a; }
-        .folder-icon { color: #0b2b4a; font-size: 1.2rem; }
+        .folder-icon { color: #0b2b4a; font-size: 1rem; }
+        .sort-indicator { font-size: 0.7rem; margin-left: 4px; color: #8aa9c9; }
         @media (max-width: 700px) { 
-            .card { padding: 20px; } 
-            .scan-area { flex-direction: column; align-items: stretch; } 
+            .card { padding: 16px 18px; } 
+            .scan-area { flex-direction: column; align-items: stretch; padding: 16px; } 
             .folder-input-group input { min-width: auto; } 
-            .search-section { border-radius: 30px; padding: 6px 12px; } 
-            .logo-placeholder { width: 100px; height: 100px; } 
-            .uni-name { font-size: 1.2rem; } 
-            .uni-sub { font-size: 0.8rem; }
-            .report-table { font-size: 10pt; }
-            .report-table th, .report-table td { padding: 8px 10px; }
+            .search-section { border-radius: 30px; padding: 4px 8px; } 
+            .logo-placeholder { width: 70px; height: 70px; } 
+            .uni-name { font-size: 1rem; } 
+            .uni-sub { font-size: 0.7rem; }
+            .report-table { font-size: 9pt; }
+            .report-table th, .report-table td { padding: 6px 8px; }
         }
     </style>
 </head>
@@ -156,9 +160,9 @@
             <span class="file-status" id="fileStatus">📂 Ready</span>
         </div>
         <div class="search-section">
-            <i class="fas fa-user-graduate" style="color: #5c7a9a;"></i>
+            <i class="fas fa-user-graduate" style="color: #5c7a9a; font-size: 0.85rem;"></i>
             <input type="text" id="searchInput" placeholder="Search Name or ID...">
-            <button id="searchBtn"><i class="fas fa-arrow-right"></i> Find</button>
+            <button id="searchBtn"><i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
@@ -168,11 +172,11 @@
     <!-- REPORT -->
     <div class="report-container">
         <div class="report-header">
-            <h2><i class="fas fa-list-ul"></i> Transfer Credit Report</h2>
+            <h2><i class="fas fa-list-ul"></i> Transfer Credit Report <span class="sort-indicator">↓ Newest first</span></h2>
             <span class="record-count" id="recordCount">0 records</span>
         </div>
         <div class="report-list" id="reportList">
-            <div class="empty-message"><i class="fas fa-folder-open" style="margin-right: 12px;"></i> Click "Auto-Scan" to scan the folder for TC documents.</div>
+            <div class="empty-message"><i class="fas fa-folder-open" style="margin-right: 8px;"></i> Click "Auto-Scan" to scan the folder for TC documents.</div>
         </div>
     </div>
 
@@ -209,46 +213,74 @@
         let folderPermissionGranted = false;
         let lastSearchedId = "";
 
+        // ---------- PARSE DATE TO COMPARE ----------
+        function parseDate(dateStr) {
+            // Expected format: DD-MM-YYYY
+            if (!dateStr) return new Date(0);
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const year = parseInt(parts[2], 10);
+                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                    return new Date(year, month, day);
+                }
+            }
+            return new Date(0);
+        }
+
         // ---------- EXTRACT DATE FROM "NAME / SIGNATURE" SECTION ----------
         function extractDateFromSignature(text) {
-            // Find the "NAME / SIGNATURE" section
-            const signatureSection = text.match(/NAME\s*\/\s*SIGNATURE[^\n]*\n([^\n]*)/i);
-            if (signatureSection) {
-                const sectionText = signatureSection[1];
-                console.log("Signature section found:", sectionText);
+            console.log("Looking for date in signature section...");
+            
+            const signatureIndex = text.search(/NAME\s*\/\s*SIGNATURE/i);
+            if (signatureIndex !== -1) {
+                const afterSignature = text.substring(signatureIndex);
+                console.log("Text after NAME/SIGNATURE:", afterSignature.substring(0, 300));
                 
-                // Look for a date in this section
-                const datePatterns = [
-                    // DATE: 01 January 2026
-                    /DATE\s*[:：]\s*(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})/i,
-                    // DATE: 01-01-2026
-                    /DATE\s*[:：]\s*(\d{2}[-/]\d{2}[-/]\d{4})/i,
-                    // Just a date after "DATE:"
-                    /DATE\s*[:：]\s*([^\n\r]+)/i,
-                    // Just a date in the signature section
-                    /\b(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})\b/i,
-                    /\b(\d{2}[-/]\d{2}[-/]\d{4})\b/,
-                ];
+                const dateMatch = afterSignature.match(/DATE\s*[:：]\s*([^\n\r]+)/i);
+                if (dateMatch && dateMatch[1]) {
+                    const dateStr = dateMatch[1].trim();
+                    console.log("Found date after NAME/SIGNATURE with DATE label:", dateStr);
+                    return formatDate(dateStr);
+                }
                 
-                for (const pattern of datePatterns) {
-                    const match = sectionText.match(pattern);
-                    if (match) {
-                        const dateStr = match[1] || match[0];
-                        console.log("Found date in signature section:", dateStr);
-                        return formatDate(dateStr);
+                const lines = afterSignature.split('\n');
+                for (let i = 0; i < Math.min(5, lines.length); i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const datePatterns = [
+                            /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
+                            /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
+                            /\b(\d{2})[-/](\d{2})[-/](\d{2})\b/,
+                        ];
+                        for (const pattern of datePatterns) {
+                            const match = line.match(pattern);
+                            if (match) {
+                                console.log("Found date in signature section line:", line);
+                                return formatDate(line);
+                            }
+                        }
                     }
                 }
             }
             
-            // If no date found in signature section, try the old method
+            const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r]+)/i);
+            if (dateLabelMatch && dateLabelMatch[1]) {
+                const dateStr = dateLabelMatch[1].trim();
+                console.log("Found date with DATE label:", dateStr);
+                return formatDate(dateStr);
+            }
+            
+            console.log("No date found in signature section, using fallback");
             return extractDateFallback(text);
         }
 
         // ---------- FORMAT DATE TO DD-MM-YYYY ----------
         function formatDate(dateStr) {
             dateStr = dateStr.trim();
+            console.log("Formatting date string:", dateStr);
             
-            // Try DD Month YYYY (e.g., 01 January 2026)
             const monthNames = {
                 'january': '01', 'february': '02', 'march': '03', 'april': '04',
                 'may': '05', 'june': '06', 'july': '07', 'august': '08',
@@ -260,29 +292,29 @@
                 const day = match[1].padStart(2, '0');
                 const month = monthNames[match[2].toLowerCase()];
                 const year = match[3];
+                console.log(`Formatted as: ${day}-${month}-${year}`);
                 return `${day}-${month}-${year}`;
             }
             
-            // Try DD-MM-YYYY or DD/MM/YYYY
             match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
             if (match) {
+                console.log(`Formatted as: ${match[1]}-${match[2]}-${match[3]}`);
                 return `${match[1]}-${match[2]}-${match[3]}`;
             }
             
-            // Try DD-MM-YY or DD/MM-YY
             match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
             if (match) {
                 const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
+                console.log(`Formatted as: ${match[1]}-${match[2]}-${year}`);
                 return `${match[1]}-${match[2]}-${year}`;
             }
             
-            // If we can't parse it, return the original
+            console.log("Could not parse date, returning original:", dateStr);
             return dateStr;
         }
 
         // ---------- FALLBACK DATE EXTRACTION ----------
         function extractDateFallback(text) {
-            // Look for dates after common labels
             const labelPatterns = [
                 /(?:Date|Submission Date|TC Date|Issued|Provided on|Approved on)\s*[:：]\s*([^\n\r]+)/i,
             ];
@@ -298,7 +330,6 @@
                 }
             }
             
-            // If no date found, use today's date
             const today = new Date();
             const d = String(today.getDate()).padStart(2, '0');
             const m = String(today.getMonth() + 1).padStart(2, '0');
@@ -356,9 +387,10 @@
                         const result = await mammoth.extractRawText({ arrayBuffer });
                         const text = result.value;
                         
-                        console.log("Extracted text:", text); // For debugging
+                        console.log("=== Extracted text from DOCX ===");
+                        console.log(text.substring(0, 500) + "...");
+                        console.log("=== End of text sample ===");
                         
-                        // Extract Student Name
                         let studentName = "Unknown Student";
                         let nameMatch = text.match(/Student\s*Name\s*[:：]\s*([^\n\r]+)/i);
                         if (nameMatch) {
@@ -394,8 +426,9 @@
                         
                         studentName = studentName.replace(/\s*(Student|Name|ID|Number|Date|Signature)/gi, '').trim();
                         
-                        // Extract Date - specifically from NAME / SIGNATURE section
                         let date = extractDateFromSignature(text);
+                        
+                        console.log(`Extracted: Name="${studentName}", ID="${studentIdFromFilename}", Date="${date}"`);
                         
                         resolve({
                             studentName: studentName,
@@ -436,7 +469,7 @@
                 folderHandle = await window.showDirectoryPicker();
                 const permission = await folderHandle.requestPermission({ mode: 'read' });
                 if (permission !== 'granted') {
-                    fileStatus.textContent = '⚠️ Permission denied to read folder';
+                    fileStatus.textContent = '⚠️ Permission denied';
                     fileStatus.style.background = "#fff3d6";
                     return;
                 }
@@ -449,10 +482,10 @@
             } catch (error) {
                 if (error.name !== 'AbortError' && error.name !== 'SecurityError') {
                     console.error("Error accessing folder:", error);
-                    fileStatus.textContent = `⚠️ Could not access folder: ${error.message}`;
+                    fileStatus.textContent = `⚠️ ${error.message}`;
                     fileStatus.style.background = "#fff3d6";
                 } else {
-                    fileStatus.textContent = `📂 Folder selection cancelled`;
+                    fileStatus.textContent = `📂 Cancelled`;
                     fileStatus.style.background = "#eaf1fb";
                 }
             }
@@ -460,7 +493,7 @@
 
         // ---------- SCAN FOLDER HANDLE ----------
         async function scanFolderHandle(handle) {
-            fileStatus.textContent = `⏳ Scanning folder...`;
+            fileStatus.textContent = `⏳ Scanning...`;
             fileStatus.style.background = "#fff3d6";
             autoScanBtn.disabled = true;
             isScanning = true;
@@ -478,7 +511,7 @@
             });
             
             if (tcFiles.length === 0) {
-                fileStatus.textContent = `⚠️ No TC-{ID}.docx files found in the selected folder`;
+                fileStatus.textContent = `⚠️ No TC files found`;
                 fileStatus.style.background = "#fff3d6";
                 autoScanBtn.disabled = false;
                 isScanning = false;
@@ -486,7 +519,7 @@
                 return;
             }
             
-            fileStatus.textContent = `⏳ Processing ${tcFiles.length} TC files...`;
+            fileStatus.textContent = `⏳ Processing ${tcFiles.length} files...`;
             
             const newRecords = [];
             let processed = 0;
@@ -501,7 +534,7 @@
                     processed++;
                     const percent = (processed / tcFiles.length) * 100;
                     progressFill.style.width = `${percent}%`;
-                    fileStatus.textContent = `⏳ Processing ${processed}/${tcFiles.length} files... (${record?.studentName || 'Unknown'})`;
+                    fileStatus.textContent = `⏳ ${processed}/${tcFiles.length} (${record?.studentName || 'Unknown'})`;
                 } catch (e) {
                     console.error("Error processing file:", entry.name, e);
                 }
@@ -517,7 +550,7 @@
                 }
             }
             
-            fileStatus.textContent = `✅ ${allRecords.length} TC records extracted from ${tcFiles.length} file(s)`;
+            fileStatus.textContent = `✅ ${allRecords.length} records extracted`;
             fileStatus.style.background = "#e6f5e6";
             renderReport(allRecords);
             
@@ -547,13 +580,13 @@
                 }
                 
                 notFoundDiv.innerHTML = `
-                    <i class="fas fa-file-alt" style="font-size: 1.8rem; display: block; margin-bottom: 12px; color: #b38b6d;"></i>
+                    <i class="fas fa-file-alt" style="font-size: 1.5rem; display: block; margin-bottom: 8px; color: #b38b6d;"></i>
                     <strong style="font-style: normal; color: #2d1f14;">TC record not found</strong> 
                     for “${searchInput.value || 'this student'}”.
                     <div class="action-group">
                         <button class="action-btn download-btn" id="downloadTcBtn"><i class="fas fa-download"></i> Download Form (TC-${formId}.docx)</button>
                     </div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
+                    <div style="margin-top: 6px; font-size: 0.75rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
                         <i class="fas fa-info-circle"></i> The form will be downloaded as "TC-${formId}.docx"
                     </div>
                 `;
@@ -567,15 +600,16 @@
                 return;
             }
 
+            // Sort by date from newest to oldest
             const sorted = [...formsArray].sort((a, b) => {
-                return b.studentId.localeCompare(a.studentId);
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+                return dateB - dateA; // Newest first
             });
 
-            // Create table
             const table = document.createElement('table');
             table.className = 'report-table';
             
-            // Table header
             const thead = document.createElement('thead');
             const headerRow = document.createElement('tr');
             const headers = ['S. No.', "Student's Name", 'ID Number', 'TC Date', 'Provider', 'File Name'];
@@ -587,38 +621,31 @@
             thead.appendChild(headerRow);
             table.appendChild(thead);
             
-            // Table body
             const tbody = document.createElement('tbody');
             sorted.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 
-                // S. No.
                 const snoTd = document.createElement('td');
                 snoTd.className = 'sno-col';
                 snoTd.textContent = index + 1;
                 tr.appendChild(snoTd);
                 
-                // Student Name
                 const nameTd = document.createElement('td');
                 nameTd.textContent = item.studentName;
                 tr.appendChild(nameTd);
                 
-                // ID Number
                 const idTd = document.createElement('td');
                 idTd.textContent = item.studentId;
                 tr.appendChild(idTd);
                 
-                // TC Date
                 const dateTd = document.createElement('td');
                 dateTd.textContent = item.date;
                 tr.appendChild(dateTd);
                 
-                // Provider
                 const providerTd = document.createElement('td');
                 providerTd.textContent = PROVIDER_NAME;
                 tr.appendChild(providerTd);
                 
-                // File Name
                 const fileTd = document.createElement('td');
                 fileTd.className = 'file-name-col';
                 fileTd.textContent = item.fileName || '';
