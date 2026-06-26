@@ -10,146 +10,474 @@
     <!-- PDF.js for PDF reading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
-        /* --- STYLES --- */
+        :root {
+            --primary: #0a2463;
+            --primary-light: #1e3a8a;
+            --primary-dark: #061a4a;
+            --secondary: #3b82f6;
+            --accent: #60a5fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --radius: 16px;
+            --shadow: 0 4px 24px rgba(10, 36, 99, 0.08);
+            --shadow-lg: 0 8px 48px rgba(10, 36, 99, 0.12);
+            --transition: all 0.2s ease;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #f4f7fc; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { max-width: 1100px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25); padding: 30px 35px; transition: 0.2s; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-        .logo-area { display: flex; align-items: center; gap: 18px; }
-        .logo-placeholder { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
-        .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        .uni-name { font-weight: 700; font-size: 1.3rem; color: #0b2b4a; letter-spacing: -0.3px; line-height: 1.1; }
-        .uni-sub { font-weight: 400; font-size: 0.85rem; color: #1f4b77; display: block; letter-spacing: -0.1px; }
-        .badge { background: #eef3fa; padding: 6px 14px; border-radius: 40px; font-size: 0.75rem; color: #1f3a5f; font-weight: 500; display: flex; align-items: center; gap: 6px; }
-        .scan-area { background: #f9faff; border-radius: 24px; padding: 20px 22px; margin: 20px 0 15px 0; border: 1px dashed #b7c9e2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-        .folder-input-group { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; flex: 1; }
-        .folder-input-group input { 
-            flex: 1; 
-            min-width: 250px; 
-            padding: 10px 16px; 
-            border: 1px solid #d6e0ed; 
-            border-radius: 60px; 
-            font-size: 0.9rem; 
-            background: #f5f8fc; 
-            color: #5c7390;
+        
+        body {
+            background: linear-gradient(135deg, #eef2f7 0%, #f8fafc 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .card {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-placeholder {
+            width: 140px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        .logo-placeholder img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
+        }
+
+        .uni-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .uni-sub {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.75);
+            display: block;
+            letter-spacing: 0.01em;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.02em;
+        }
+        .badge i { opacity: 0.8; }
+
+        .scan-area {
+            background: var(--gray-50);
+            padding: 20px 28px;
+            margin: 0;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .folder-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .folder-input-group input {
+            flex: 1;
+            min-width: 220px;
+            padding: 10px 18px;
+            border: 1px solid var(--gray-200);
+            border-radius: 40px;
+            font-size: 0.85rem;
+            background: white;
+            color: var(--gray-500);
             cursor: default;
             user-select: none;
+            transition: var(--transition);
         }
-        .folder-input-group input:focus { outline: none; border-color: #0b2b4a; }
-        .auto-scan-btn { background: #0b2b4a; color: white; border: none; padding: 10px 22px; border-radius: 60px; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.15s; box-shadow: 0 4px 10px rgba(11,43,74,0.15); }
-        .auto-scan-btn:hover { background: #1e3f62; transform: scale(1.01); }
+        .folder-input-group input:focus { outline: none; border-color: var(--secondary); }
+
+        .auto-scan-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 12px rgba(10, 36, 99, 0.2);
+        }
+        .auto-scan-btn:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(10, 36, 99, 0.25); }
         .auto-scan-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .search-section { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; background: white; padding: 3px 6px 3px 14px; border-radius: 60px; border: 1px solid #d6e0ed; }
-        .search-section input { border: none; padding: 6px 4px; font-size: 0.9rem; min-width: 130px; outline: none; background: transparent; }
-        .search-section button { background: #eef3fa; border: none; padding: 5px 14px; border-radius: 40px; font-weight: 500; color: #1f3a5f; cursor: pointer; transition: 0.1s; font-size: 0.85rem; }
-        .search-section button:hover { background: #dce5f0; }
-        .report-container { background: #ffffff; border-radius: 20px; padding: 8px 0 4px 0; }
-        .report-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; }
-        .report-header h2 { font-weight: 600; font-size: 1.2rem; color: #0b1f33; display: flex; align-items: center; gap: 8px; }
-        .report-header h2 i { color: #2b6c9e; }
-        .record-count { background: #dce5f0; padding: 3px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 500; color: #1e3d60; }
-        .report-list { background: #f8faff; border-radius: 16px; padding: 8px 0; min-height: 100px; border: 1px solid #e4ebf5; overflow-x: auto; }
+        .auto-scan-btn i { font-size: 0.9rem; }
+
+        .file-status {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            background: white;
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--gray-200);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .search-section {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 3px 4px 3px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+        .search-section:focus-within { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .search-section input {
+            border: none;
+            padding: 7px 4px;
+            font-size: 0.85rem;
+            min-width: 120px;
+            outline: none;
+            background: transparent;
+            color: var(--gray-700);
+        }
+        .search-section input::placeholder { color: var(--gray-400); }
+        .search-section button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+        .search-section button:hover { background: var(--primary-light); }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--gray-200);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .report-container {
+            padding: 20px 28px 12px 28px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .report-header h2 {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+        }
+        .report-header h2 i { color: var(--secondary); }
+        .sort-indicator {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            background: var(--gray-100);
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+
+        .record-count {
+            background: var(--gray-100);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            letter-spacing: 0.02em;
+        }
+
+        .report-list {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            overflow-x: auto;
+            min-height: 100px;
+        }
+
         .report-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 11pt;
+            font-size: 0.85rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         .report-table th {
-            background: #0b2b4a;
-            color: white;
-            padding: 8px 12px;
+            background: var(--gray-50);
+            color: var(--gray-600);
+            padding: 12px 16px;
             text-align: left;
             font-weight: 600;
-            border-bottom: 2px solid #0b2b4a;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--gray-200);
             white-space: nowrap;
-            font-size: 11pt;
         }
+
         .report-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #e6edf6;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-100);
             vertical-align: middle;
-            font-size: 11pt;
+            color: var(--gray-700);
+            font-size: 0.85rem;
         }
-        .report-table tr:hover td {
-            background: #f0f6ff;
-        }
-        .report-table .file-name-col {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 8pt;
-            color: #7a8fa5;
-        }
+
+        .report-table tr:last-child td { border-bottom: none; }
+        .report-table tr:hover td { background: var(--gray-50); }
+
         .report-table .sno-col {
-            color: #5c7390;
+            color: var(--gray-400);
             font-weight: 500;
             text-align: center;
             width: 40px;
-            white-space: nowrap;
+            font-size: 0.75rem;
         }
-        .empty-message, .not-found-message { 
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 11pt;
-            color: #5c7390; 
-            padding: 25px 20px; 
-            text-align: center; 
-            font-style: italic; 
+
+        .report-table .file-name-col {
+            font-size: 0.7rem;
+            color: var(--gray-500);
         }
-        .not-found-message { background: #fff6f0; border-radius: 16px; border: 1px solid #ffe4d6; }
-        .action-btn { 
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #0b2b4a; 
-            color: white; 
-            border: none; 
-            padding: 6px 18px; 
-            border-radius: 40px; 
-            font-weight: 500; 
-            cursor: pointer; 
-            transition: 0.1s; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            margin: 4px; 
-            font-size: 0.85rem;
-        }
-        .action-btn:hover { background: #1e3f62; }
-        .action-btn i { font-size: 0.85rem; }
-        .file-status { font-size: 0.75rem; color: #2f6b9e; background: #eaf1fb; padding: 3px 12px; border-radius: 30px; font-family: 'Segoe UI', Arial, sans-serif; }
-        .footer-note { margin-top: 15px; font-size: 0.75rem; color: #4c6990; text-align: right; border-top: 1px solid #e2ebf5; padding-top: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; font-family: 'Segoe UI', Arial, sans-serif; }
-        .sample-logo { display: flex; align-items: center; gap: 5px; }
-        .sample-logo i { font-size: 1.1rem; color: #1f4b77; }
-        .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-        .progress-bar { width: 100%; height: 3px; background: #e0e7ef; border-radius: 3px; margin: 6px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: #0b2b4a; width: 0%; transition: width 0.3s; border-radius: 3px; }
-        .download-btn { background: #1a764a; }
-        .download-btn:hover { background: #145d3a; }
-        .folder-icon { color: #0b2b4a; font-size: 1rem; }
-        .sort-indicator { font-size: 0.7rem; margin-left: 4px; color: #8aa9c9; }
-        .file-type-badge { 
-            font-size: 0.6rem; 
-            background: #dce5f0; 
-            color: #1f3a5f; 
-            padding: 1px 6px; 
-            border-radius: 10px; 
+
+        .file-type-badge {
+            font-size: 0.55rem;
+            font-weight: 600;
+            background: var(--gray-200);
+            color: var(--gray-600);
+            padding: 1px 8px;
+            border-radius: 10px;
             margin-left: 4px;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
-        @media (max-width: 700px) { 
-            .card { padding: 16px 18px; } 
-            .scan-area { flex-direction: column; align-items: stretch; padding: 16px; } 
-            .folder-input-group input { min-width: auto; } 
-            .search-section { border-radius: 30px; padding: 4px 8px; } 
-            .logo-placeholder { width: 100px; height: 100px; } 
-            .uni-name { font-size: 1rem; } 
+
+        .empty-message, .not-found-message {
+            color: var(--gray-500);
+            padding: 32px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .not-found-message {
+            background: #fff8f5;
+            border-radius: 12px;
+            border: 1px solid #fee7e0;
+        }
+
+        .not-found-message strong { color: var(--gray-700); }
+
+        .action-btn {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: none;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .action-btn:hover { background: var(--gray-200); }
+
+        .download-btn {
+            background: var(--success);
+            color: white;
+        }
+        .download-btn:hover { background: #059669; }
+
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .footer-note {
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--gray-50);
+        }
+
+        .sample-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sample-logo i { color: var(--gray-400); font-size: 1rem; }
+        .sample-logo span { font-weight: 500; color: var(--gray-600); }
+
+        .footer-note .right { color: var(--gray-400); }
+        .footer-note .right i { color: var(--success); }
+
+        /* --- UPDATED BOTTOM FOOTER - Single Line --- */
+        .bottom-footer {
+            background: #1a2a4a;
+            padding: 14px 28px;
+            text-align: center;
+            border-top: 2px solid var(--primary-light);
+        }
+        .bottom-footer p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 12px;
+            line-height: 1.6;
+            letter-spacing: 0.02em;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .bottom-footer a {
+            color: #7ab7ff;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .bottom-footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        .bottom-footer .copyright-link {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .bottom-footer .copyright-link:hover {
+            color: #7ab7ff;
+            text-decoration: underline;
+        }
+        .bottom-footer .separator {
+            color: rgba(255, 255, 255, 0.3);
+            margin: 0 6px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .header { padding: 16px 20px; flex-direction: column; align-items: stretch; }
+            .logo-area { gap: 14px; }
+            .logo-placeholder { width: 120px; height: 80px; }
+            .uni-name { font-size: 1.1rem; }
             .uni-sub { font-size: 0.7rem; }
-            .report-table { font-size: 9pt; }
-            .report-table th, .report-table td { padding: 6px 8px; }
+            .badge { align-self: flex-start; font-size: 0.65rem; }
+            .scan-area { padding: 16px 20px; flex-direction: column; align-items: stretch; }
+            .folder-input-group input { min-width: auto; }
+            .search-section { width: 100%; }
+            .search-section input { flex: 1; }
+            .report-container { padding: 16px 16px 8px 16px; }
+            .report-table th, .report-table td { padding: 8px 12px; font-size: 0.75rem; }
+            .footer-note { padding: 12px 16px; flex-direction: column; align-items: center; text-align: center; }
+            .bottom-footer { padding: 12px 16px; }
+            .bottom-footer p { font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo-placeholder { width: 100px; height: 70px; }
+            .uni-name { font-size: 0.95rem; }
+            .uni-sub { font-size: 0.6rem; }
+            .auto-scan-btn { padding: 8px 16px; font-size: 0.75rem; }
+            .file-status { font-size: 0.65rem; padding: 2px 10px; }
+            .report-table th, .report-table td { padding: 6px 8px; font-size: 0.7rem; }
+            .bottom-footer p { font-size: 10px; }
         }
     </style>
 </head>
 <body>
 <div class="card">
-    <!-- HEADER -->
-    <div class="header">
+    <header class="header">
         <div class="logo-area">
             <div class="logo-placeholder">
                 <img src="https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png" alt="A'Sharqiyah University Logo">
@@ -160,27 +488,24 @@
             </div>
         </div>
         <div class="badge"><i class="fas fa-file-alt"></i> Transfer Credits Tracker</div>
-    </div>
+    </header>
 
-    <!-- SCAN AREA -->
     <div class="scan-area">
         <div class="folder-input-group">
-            <i class="fas fa-folder folder-icon"></i>
+            <i class="fas fa-folder" style="color: var(--gray-400); font-size: 1rem;"></i>
             <input type="text" id="folderPath" placeholder="Select folder to scan..." readonly>
             <button class="auto-scan-btn" id="autoScanBtn"><i class="fas fa-play"></i> Auto-Scan</button>
             <span class="file-status" id="fileStatus">📂 Ready</span>
         </div>
         <div class="search-section">
-            <i class="fas fa-user-graduate" style="color: #5c7a9a; font-size: 0.85rem;"></i>
+            <i class="fas fa-search" style="color: var(--gray-400); font-size: 0.8rem;"></i>
             <input type="text" id="searchInput" placeholder="Search Name or ID...">
             <button id="searchBtn"><i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <!-- PROGRESS BAR -->
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-    <!-- REPORT -->
     <div class="report-container">
         <div class="report-header">
             <h2><i class="fas fa-list-ul"></i> Transfer Credit Report <span class="sort-indicator">↓ Newest first</span></h2>
@@ -191,16 +516,28 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer-note">
-        <div class="sample-logo"><i class="fas fa-user-tie"></i> <span style="font-weight: 500;">Center Director: Dr. Waleed Al Harthy</span></div>
-        <div><i class="fas fa-check-circle" style="color: #1a764a;"></i> <span style="font-weight: 400;">Admissions & Registration</span></div>
+        <div class="sample-logo"><i class="fas fa-user-tie"></i> <span>Center Director: Dr. Waleed Al Harthy</span></div>
+        <div class="right"><i class="fas fa-check-circle"></i> Admissions & Registration</div>
+    </div>
+
+    <!-- UPDATED BOTTOM FOOTER - Single Line with Links -->
+    <div class="bottom-footer">
+        <p>
+            <a href="https://www.asu.edu.om/" target="_blank">A'Sharqiyah University</a>
+            <span class="separator">:</span>
+            P.O Box 42, Postal Code: 400 Ibra, Sultanate of Oman.
+            <span class="separator">|</span>
+            <a href="https://www.asu.edu.om/CLFS" target="_blank">Center For Language and Foundation Studies</a>.
+            <span class="separator">|</span>
+            Copyright &copy;
+            <a href="mailto:h.rehman@asu.edu.om" class="copyright-link">drkhan 2026</a>.
+        </p>
     </div>
 </div>
 
 <script>
     (function() {
-        // DOM refs
         const reportList = document.getElementById('reportList');
         const recordCount = document.getElementById('recordCount');
         const folderPath = document.getElementById('folderPath');
@@ -210,15 +547,12 @@
         const fileStatus = document.getElementById('fileStatus');
         const progressFill = document.getElementById('progressFill');
 
-        // --- CONFIGURATION ---
         const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/TC-form.docx";
         const LOGO_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png";
         const PROVIDER_NAME = "Dr. Waleed Al Harthy";
 
-        // Set PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        // Update the logo dynamically
         document.querySelector('.logo-placeholder img').src = LOGO_URL;
 
         let allRecords = [];
@@ -227,7 +561,6 @@
         let folderPermissionGranted = false;
         let lastSearchedId = "";
 
-        // ---------- PARSE DATE TO COMPARE ----------
         function parseDate(dateStr) {
             if (!dateStr) return new Date(0);
             const parts = dateStr.split('-');
@@ -242,99 +575,77 @@
             return new Date(0);
         }
 
-        // ---------- EXTRACT STUDENT NAME ----------
-        function extractStudentName(text) {
-            // Try to find "Student Name:" pattern first
-            let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
-            if (match && match[1]) {
-                let name = match[1].trim().replace(/\s{2,}/g, ' ');
-                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
-                if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
-                    return name;
-                }
-            }
+        // ---------- IMPROVED DATE EXTRACTION - TARGETS NAME/SIGNATURE ----------
+        function extractDateFromText(text) {
+            console.log("=== EXTRACTING DATE ===");
             
-            // Try "Name:" pattern
-            match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
-            if (match && match[1]) {
-                let name = match[1].trim().replace(/\s{2,}/g, ' ');
-                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
-                if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
-                    return name;
-                }
-            }
+            // STRATEGY 1: Look for "NAME / SIGNATURE" and then find DATE right after it
+            const signaturePatterns = [
+                /NAME\s*\/\s*SIGNATURE\s*[:：]?\s*([^\n]*?)\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
+                /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*(?:DATE\s*[:：]\s*([^\n\r,]+))/i,
+                /NAME\s*\/\s*SIGNATURE[^\n]*\n\s*([^\n\r,]+)/i,
+            ];
             
-            // Look for a name at the very beginning of the document
-            const lines = text.split(/[\n\.]/);
-            for (let i = 0; i < Math.min(5, lines.length); i++) {
-                const line = lines[i].trim();
-                if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
-                    const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
-                    let isExcluded = false;
-                    for (const word of excludeWords) {
-                        if (line.match(new RegExp(word, 'i'))) {
-                            isExcluded = true;
-                            break;
+            for (const pattern of signaturePatterns) {
+                const match = text.match(pattern);
+                if (match) {
+                    let dateStr = match[2] || match[1];
+                    if (dateStr) {
+                        dateStr = dateStr.trim();
+                        console.log("Found date after NAME/SIGNATURE:", dateStr);
+                        const formatted = formatDate(dateStr);
+                        if (formatted) {
+                            console.log("Formatted date:", formatted);
+                            return formatted;
                         }
                     }
-                    if (!isExcluded) {
-                        return line;
-                    }
                 }
             }
-            
-            // Look for a name after "Student" keyword
-            const studentIndex = text.search(/\bStudent\b/i);
-            if (studentIndex !== -1) {
-                const afterStudent = text.substring(studentIndex + 7);
-                const nameMatch = afterStudent.match(/^[^,.\n]*/);
-                if (nameMatch) {
-                    let name = nameMatch[0].trim();
-                    name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
-                    if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
-                        return name;
-                    }
-                }
-            }
-            
-            return "Unknown Student";
-        }
 
-        // ---------- EXTRACT DATE ----------
-        function extractDateFromText(text) {
-            // Look for DATE in HEAD OF DEPARTMENT section
+            // STRATEGY 2: Look for DATE label that appears after NAME/SIGNATURE
+            const signatureIndex = text.search(/NAME\s*\/\s*SIGNATURE/i);
+            if (signatureIndex !== -1) {
+                const afterSignature = text.substring(signatureIndex);
+                const dateMatch = afterSignature.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
+                if (dateMatch && dateMatch[1]) {
+                    const dateStr = dateMatch[1].trim();
+                    console.log("Found DATE label after NAME/SIGNATURE:", dateStr);
+                    const formatted = formatDate(dateStr);
+                    if (formatted) {
+                        console.log("Formatted date:", formatted);
+                        return formatted;
+                    }
+                }
+            }
+
+            // STRATEGY 3: Look for HEAD OF DEPARTMENT section
             const headDeptMatch = text.match(/HEAD\s*OF\s*DEPARTMENT[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
             if (headDeptMatch && headDeptMatch[1]) {
                 const dateStr = headDeptMatch[1].trim();
+                console.log("Found date in HEAD OF DEPARTMENT:", dateStr);
                 const formatted = formatDate(dateStr);
                 if (formatted) return formatted;
             }
-            
-            // Look for DATE in COLLEGE DEAN section
+
+            // STRATEGY 4: Look for COLLEGE DEAN section
             const deanMatch = text.match(/COLLEGE\s*DEAN[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
             if (deanMatch && deanMatch[1]) {
                 const dateStr = deanMatch[1].trim();
+                console.log("Found date in COLLEGE DEAN:", dateStr);
                 const formatted = formatDate(dateStr);
                 if (formatted) return formatted;
             }
-            
-            // Look for DATE in NAME / SIGNATURE section
-            const signatureMatch = text.match(/NAME\s*\/\s*SIGNATURE[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
-            if (signatureMatch && signatureMatch[1]) {
-                const dateStr = signatureMatch[1].trim();
-                const formatted = formatDate(dateStr);
-                if (formatted) return formatted;
-            }
-            
-            // Look for any DATE label
+
+            // STRATEGY 5: Look for any DATE label
             const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
             if (dateLabelMatch && dateLabelMatch[1]) {
                 const dateStr = dateLabelMatch[1].trim();
+                console.log("Found date with DATE label:", dateStr);
                 const formatted = formatDate(dateStr);
                 if (formatted) return formatted;
             }
-            
-            // Fallback: look for any date pattern
+
+            // STRATEGY 6: Fallback - look for any date pattern
             const fallbackPatterns = [
                 /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
                 /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
@@ -342,11 +653,13 @@
             for (const pattern of fallbackPatterns) {
                 const match = text.match(pattern);
                 if (match) {
+                    console.log("Found date with fallback pattern:", match[0]);
                     const formatted = formatDate(match[0]);
                     if (formatted) return formatted;
                 }
             }
-            
+
+            console.log("No date found, using today's date");
             const today = new Date();
             const d = String(today.getDate()).padStart(2, '0');
             const m = String(today.getMonth() + 1).padStart(2, '0');
@@ -365,18 +678,20 @@
                 'september': '09', 'october': '10', 'november': '11', 'december': '12'
             };
             
-            // Try DD Month YYYY
+            // Try DD Month YYYY (e.g., 09 June 2026)
             let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
             if (match) {
                 const day = match[1].padStart(2, '0');
                 const month = monthNames[match[2].toLowerCase()];
                 const year = match[3];
+                console.log(`Formatted as: ${day}-${month}-${year}`);
                 return `${day}-${month}-${year}`;
             }
             
-            // Try DD-MM-YYYY or DD/MM/YYYY
+            // Try DD-MM-YYYY or DD/MM-YYYY
             match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
             if (match) {
+                console.log(`Formatted as: ${match[1]}-${match[2]}-${match[3]}`);
                 return `${match[1]}-${match[2]}-${match[3]}`;
             }
             
@@ -384,13 +699,69 @@
             match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
             if (match) {
                 const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
+                console.log(`Formatted as: ${match[1]}-${match[2]}-${year}`);
                 return `${match[1]}-${match[2]}-${year}`;
             }
             
+            console.log("Could not parse date:", dateStr);
             return null;
         }
 
-        // ---------- EXTRACT DATA FROM DOCX FILE ----------
+        // ---------- EXTRACT STUDENT NAME ----------
+        function extractStudentName(text) {
+            let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
+            if (match && match[1]) {
+                let name = match[1].trim().replace(/\s{2,}/g, ' ');
+                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+                if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
+                    return name;
+                }
+            }
+            
+            match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
+            if (match && match[1]) {
+                let name = match[1].trim().replace(/\s{2,}/g, ' ');
+                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+                if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
+                    return name;
+                }
+            }
+            
+            const lines = text.split(/[\n\.]/);
+            for (let i = 0; i < Math.min(5, lines.length); i++) {
+                const line = lines[i].trim();
+                if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
+                    const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
+                    let isExcluded = false;
+                    for (const word of excludeWords) {
+                        if (line.match(new RegExp(word, 'i'))) {
+                            isExcluded = true;
+                            break;
+                        }
+                    }
+                    if (!isExcluded) {
+                        return line;
+                    }
+                }
+            }
+            
+            const studentIndex = text.search(/\bStudent\b/i);
+            if (studentIndex !== -1) {
+                const afterStudent = text.substring(studentIndex + 7);
+                const nameMatch = afterStudent.match(/^[^,.\n]*/);
+                if (nameMatch) {
+                    let name = nameMatch[0].trim();
+                    name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
+                    if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
+                        return name;
+                    }
+                }
+            }
+            
+            return "Unknown Student";
+        }
+
+        // ---------- EXTRACT DATA FROM DOCX ----------
         async function extractFromDocx(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -399,6 +770,9 @@
                         const arrayBuffer = e.target.result;
                         const result = await mammoth.extractRawText({ arrayBuffer });
                         const text = result.value;
+                        console.log("=== DOCX TEXT ===");
+                        console.log(text.substring(0, 800));
+                        console.log("=== END DOCX TEXT ===");
                         resolve({
                             studentName: extractStudentName(text),
                             date: extractDateFromText(text)
@@ -416,7 +790,7 @@
             });
         }
 
-        // ---------- EXTRACT DATA FROM PDF FILE ----------
+        // ---------- EXTRACT DATA FROM PDF ----------
         async function extractFromPdf(file) {
             try {
                 const arrayBuffer = await file.arrayBuffer();
@@ -429,6 +803,10 @@
                     const pageText = textContent.items.map(item => item.str).join(' ');
                     fullText += pageText + '\n';
                 }
+                
+                console.log("=== PDF TEXT ===");
+                console.log(fullText.substring(0, 800));
+                console.log("=== END PDF TEXT ===");
                 
                 return {
                     studentName: extractStudentName(fullText),
@@ -667,7 +1045,6 @@
                 return;
             }
 
-            // Sort by date from newest to oldest
             const sorted = [...formsArray].sort((a, b) => {
                 const dateA = parseDate(a.date);
                 const dateB = parseDate(b.date);
