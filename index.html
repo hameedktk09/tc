@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer Credits · Auto Scanner</title>
+    <title>Transfer Credits Tracker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- mammoth.js for DOCX reading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -14,13 +14,25 @@
         .card { max-width: 1100px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25); padding: 30px 35px; transition: 0.2s; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 18px; flex-wrap: wrap; gap: 12px; }
         .logo-area { display: flex; align-items: center; gap: 18px; }
-        .logo-placeholder { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .logo-placeholder { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        .uni-name { font-weight: 600; font-size: 1.5rem; color: #0b2b4a; letter-spacing: -0.3px; }
+        .uni-name { font-weight: 700; font-size: 1.6rem; color: #0b2b4a; letter-spacing: -0.5px; line-height: 1.2; }
+        .uni-sub { font-weight: 400; font-size: 1.0rem; color: #1f4b77; display: block; letter-spacing: -0.2px; }
         .badge { background: #eef3fa; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; color: #1f3a5f; font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .scan-area { background: #f9faff; border-radius: 28px; padding: 28px 25px; margin: 28px 0 20px 0; border: 1px dashed #b7c9e2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px; }
         .folder-input-group { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex: 1; }
-        .folder-input-group input { flex: 1; min-width: 300px; padding: 12px 18px; border: 1px solid #d6e0ed; border-radius: 60px; font-size: 0.95rem; background: white; }
+        .folder-input-group input { 
+            flex: 1; 
+            min-width: 300px; 
+            padding: 12px 18px; 
+            border: 1px solid #d6e0ed; 
+            border-radius: 60px; 
+            font-size: 0.95rem; 
+            background: #f5f8fc; 
+            color: #5c7390;
+            cursor: default;
+            user-select: none;
+        }
         .folder-input-group input:focus { outline: none; border-color: #0b2b4a; }
         .auto-scan-btn { background: #0b2b4a; color: white; border: none; padding: 12px 28px; border-radius: 60px; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.15s; box-shadow: 0 4px 10px rgba(11,43,74,0.15); }
         .auto-scan-btn:hover { background: #1e3f62; transform: scale(1.01); }
@@ -34,28 +46,41 @@
         .report-header h2 { font-weight: 600; font-size: 1.5rem; color: #0b1f33; display: flex; align-items: center; gap: 10px; }
         .report-header h2 i { color: #2b6c9e; }
         .record-count { background: #dce5f0; padding: 4px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; color: #1e3d60; }
-        .report-list { background: #f8faff; border-radius: 18px; padding: 12px 0; min-height: 130px; border: 1px solid #e4ebf5; }
-        .report-item {
+        .report-list { background: #f8faff; border-radius: 18px; padding: 12px 0; min-height: 130px; border: 1px solid #e4ebf5; overflow-x: auto; }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
-            padding: 8px 24px;
-            border-bottom: 1px solid #e6edf6;
-            transition: 0.1s;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px;
         }
-        .report-item:last-child { border-bottom: none; }
-        .report-item:hover { background: #f0f6ff; }
-        .report-item .student-name { font-weight: bold; }
-        .report-item .student-id { font-weight: bold; }
-        .report-item .issuer-name { font-weight: bold; }
-        .report-item .file-name { 
+        .report-table th {
+            background: #0b2b4a;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #0b2b4a;
+            white-space: nowrap;
+        }
+        .report-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e6edf6;
+            vertical-align: middle;
+        }
+        .report-table tr:hover td {
+            background: #f0f6ff;
+        }
+        .report-table .file-name-col {
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 9pt;
             color: #7a8fa5;
-            margin-left: auto;
+        }
+        .report-table .sno-col {
+            color: #5c7390;
+            font-weight: 500;
+            text-align: center;
+            width: 50px;
+            white-space: nowrap;
         }
         .empty-message, .not-found-message { 
             font-family: 'Times New Roman', Times, serif;
@@ -90,7 +115,20 @@
         .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
         .progress-bar { width: 100%; height: 4px; background: #e0e7ef; border-radius: 4px; margin: 8px 0; overflow: hidden; }
         .progress-fill { height: 100%; background: #0b2b4a; width: 0%; transition: width 0.3s; border-radius: 4px; }
-        @media (max-width: 700px) { .card { padding: 20px; } .scan-area { flex-direction: column; align-items: stretch; } .folder-input-group input { min-width: auto; } .search-section { border-radius: 30px; padding: 6px 12px; } .logo-placeholder { width: 80px; height: 80px; } }
+        .download-btn { background: #1a764a; }
+        .download-btn:hover { background: #145d3a; }
+        .folder-icon { color: #0b2b4a; font-size: 1.2rem; }
+        @media (max-width: 700px) { 
+            .card { padding: 20px; } 
+            .scan-area { flex-direction: column; align-items: stretch; } 
+            .folder-input-group input { min-width: auto; } 
+            .search-section { border-radius: 30px; padding: 6px 12px; } 
+            .logo-placeholder { width: 100px; height: 100px; } 
+            .uni-name { font-size: 1.2rem; } 
+            .uni-sub { font-size: 0.8rem; }
+            .report-table { font-size: 10pt; }
+            .report-table th, .report-table td { padding: 8px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -99,18 +137,21 @@
     <div class="header">
         <div class="logo-area">
             <div class="logo-placeholder">
-                <img src="https://raw.githubusercontent.com/hameedktk09/cms/main/ASU-logo.png" alt="A'Sharqiyah University Logo">
+                <img src="https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png" alt="A'Sharqiyah University Logo">
             </div>
-            <span class="uni-name"><i class="fas fa-graduation-cap" style="margin-right: 8px; color: #2b6c9e;"></i> A'Sharqiyah University</span>
+            <div>
+                <span class="uni-name">A'Sharqiyah University</span>
+                <span class="uni-sub">Center For Language and Foundation Studies</span>
+            </div>
         </div>
-        <div class="badge"><i class="fas fa-file-alt"></i> Transfer Credits · Auto Scanner</div>
+        <div class="badge"><i class="fas fa-file-alt"></i> Transfer Credits Tracker</div>
     </div>
 
     <!-- SCAN AREA -->
     <div class="scan-area">
         <div class="folder-input-group">
-            <i class="fas fa-folder" style="color: #0b2b4a; font-size: 1.2rem;"></i>
-            <input type="text" id="folderPath" value="C:\Users\h.rehman\Dropbox\TC(s)-2026" placeholder="Enter folder path..." readonly>
+            <i class="fas fa-folder folder-icon"></i>
+            <input type="text" id="folderPath" placeholder="Select folder to scan..." readonly>
             <button class="auto-scan-btn" id="autoScanBtn"><i class="fas fa-play"></i> Auto-Scan</button>
             <span class="file-status" id="fileStatus">📂 Ready</span>
         </div>
@@ -137,7 +178,7 @@
 
     <!-- FOOTER -->
     <div class="footer-note">
-        <div class="sample-logo"><i class="fas fa-user-graduate"></i> <span style="font-weight: 500;">College Dean: DR. WALEED AL HARTHY</span></div>
+        <div class="sample-logo"><i class="fas fa-user-tie"></i> <span style="font-weight: 500;">Center Director: Dr. Waleed Al Harthy</span></div>
         <div><i class="fas fa-check-circle" style="color: #1a764a;"></i> <span style="font-weight: 400;">Admissions & Registration</span></div>
     </div>
 </div>
@@ -154,8 +195,13 @@
         const fileStatus = document.getElementById('fileStatus');
         const progressFill = document.getElementById('progressFill');
 
-        // --- CONFIGURATION: SET YOUR WORD DOCUMENT URL HERE ---
-        const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/cms/main/Transfer%20Credits%20form.docx";
+        // --- CONFIGURATION ---
+        const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/TC-form.docx";
+        const LOGO_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png";
+        const PROVIDER_NAME = "Dr. Waleed Al Harthy";
+
+        // Update the logo dynamically
+        document.querySelector('.logo-placeholder img').src = LOGO_URL;
 
         let allRecords = [];
         let isScanning = false;
@@ -163,19 +209,134 @@
         let folderPermissionGranted = false;
         let lastSearchedId = "";
 
-        // ---------- CONVERT TO SENTENCE CASE ----------
-        function toSentenceCase(text) {
-            if (!text) return text;
-            let result = text.toLowerCase();
-            const words = result.split(' ');
-            const processedWords = words.map(word => {
-                if (word.endsWith('.')) {
-                    return word.toUpperCase();
+        // ---------- EXTRACT DATE FROM "NAME / SIGNATURE" SECTION ----------
+        function extractDateFromSignature(text) {
+            // Find the "NAME / SIGNATURE" section
+            const signatureSection = text.match(/NAME\s*\/\s*SIGNATURE[^\n]*\n([^\n]*)/i);
+            if (signatureSection) {
+                const sectionText = signatureSection[1];
+                console.log("Signature section found:", sectionText);
+                
+                // Look for a date in this section
+                const datePatterns = [
+                    // DATE: 01 January 2026
+                    /DATE\s*[:：]\s*(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})/i,
+                    // DATE: 01-01-2026
+                    /DATE\s*[:：]\s*(\d{2}[-/]\d{2}[-/]\d{4})/i,
+                    // Just a date after "DATE:"
+                    /DATE\s*[:：]\s*([^\n\r]+)/i,
+                    // Just a date in the signature section
+                    /\b(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})\b/i,
+                    /\b(\d{2}[-/]\d{2}[-/]\d{4})\b/,
+                ];
+                
+                for (const pattern of datePatterns) {
+                    const match = sectionText.match(pattern);
+                    if (match) {
+                        const dateStr = match[1] || match[0];
+                        console.log("Found date in signature section:", dateStr);
+                        return formatDate(dateStr);
+                    }
                 }
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            });
-            result = processedWords.join(' ');
-            return result;
+            }
+            
+            // If no date found in signature section, try the old method
+            return extractDateFallback(text);
+        }
+
+        // ---------- FORMAT DATE TO DD-MM-YYYY ----------
+        function formatDate(dateStr) {
+            dateStr = dateStr.trim();
+            
+            // Try DD Month YYYY (e.g., 01 January 2026)
+            const monthNames = {
+                'january': '01', 'february': '02', 'march': '03', 'april': '04',
+                'may': '05', 'june': '06', 'july': '07', 'august': '08',
+                'september': '09', 'october': '10', 'november': '11', 'december': '12'
+            };
+            
+            let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                const month = monthNames[match[2].toLowerCase()];
+                const year = match[3];
+                return `${day}-${month}-${year}`;
+            }
+            
+            // Try DD-MM-YYYY or DD/MM/YYYY
+            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
+            if (match) {
+                return `${match[1]}-${match[2]}-${match[3]}`;
+            }
+            
+            // Try DD-MM-YY or DD/MM-YY
+            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
+            if (match) {
+                const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
+                return `${match[1]}-${match[2]}-${year}`;
+            }
+            
+            // If we can't parse it, return the original
+            return dateStr;
+        }
+
+        // ---------- FALLBACK DATE EXTRACTION ----------
+        function extractDateFallback(text) {
+            // Look for dates after common labels
+            const labelPatterns = [
+                /(?:Date|Submission Date|TC Date|Issued|Provided on|Approved on)\s*[:：]\s*([^\n\r]+)/i,
+            ];
+            
+            for (const pattern of labelPatterns) {
+                const match = text.match(pattern);
+                if (match && match[1]) {
+                    const possibleDate = match[1].trim();
+                    const formatted = formatDate(possibleDate);
+                    if (formatted !== possibleDate) {
+                        return formatted;
+                    }
+                }
+            }
+            
+            // If no date found, use today's date
+            const today = new Date();
+            const d = String(today.getDate()).padStart(2, '0');
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const y = today.getFullYear();
+            return `${d}-${m}-${y}`;
+        }
+
+        // ---------- DOWNLOAD FORM WITH RENAMED FILE ----------
+        function downloadFormWithName(studentId) {
+            if (!studentId || studentId === "ID") {
+                alert('Please enter a valid Student ID (6-8 digits) first.');
+                return;
+            }
+
+            fetch(FORM_TEMPLATE_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch template: ' + response.status);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `TC-${studentId}.docx`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                    
+                    fileStatus.textContent = `✅ Downloaded as TC-${studentId}.docx`;
+                    fileStatus.style.background = "#e6f5e6";
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    alert('Could not download the template. Please check the URL and try again.');
+                });
         }
 
         // ---------- EXTRACT DATA FROM DOCX FILE ----------
@@ -195,6 +356,9 @@
                         const result = await mammoth.extractRawText({ arrayBuffer });
                         const text = result.value;
                         
+                        console.log("Extracted text:", text); // For debugging
+                        
+                        // Extract Student Name
                         let studentName = "Unknown Student";
                         let nameMatch = text.match(/Student\s*Name\s*[:：]\s*([^\n\r]+)/i);
                         if (nameMatch) {
@@ -228,40 +392,16 @@
                             }
                         }
                         
-                        let extractedId = studentIdFromFilename;
-                        const idMatch = text.match(/Student\s*ID\s*[:：]\s*(\d{6,8})/i);
-                        if (idMatch) {
-                            extractedId = idMatch[1].trim();
-                        }
-                        
-                        const finalId = studentIdFromFilename;
-                        let date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
-                        const dateMatch = text.match(/(?:Date|Submission Date)\s*[:：]\s*(\d{2}[-/]\d{2}[-/]\d{4})/i);
-                        if (dateMatch) {
-                            date = dateMatch[1].replace(/\//g, '-');
-                        }
-                        
-                        let issuer = "Unknown";
-                        const issuerPatterns = [
-                            /(?:Dean|Director|Head|Issuer|Approved by|Signature)\s*[:：]\s*([^\n\r]+)/i,
-                            /(?:Dean|Director|Head|Issuer|Approved by|Signature)\s*([^\n\r]+)/i,
-                        ];
-                        for (const pattern of issuerPatterns) {
-                            const match = text.match(pattern);
-                            if (match && match[1] && match[1].trim().length > 2) {
-                                issuer = match[1].trim();
-                                break;
-                            }
-                        }
-                        
                         studentName = studentName.replace(/\s*(Student|Name|ID|Number|Date|Signature)/gi, '').trim();
-                        issuer = toSentenceCase(issuer);
+                        
+                        // Extract Date - specifically from NAME / SIGNATURE section
+                        let date = extractDateFromSignature(text);
                         
                         resolve({
                             studentName: studentName,
-                            studentId: finalId,
+                            studentId: studentIdFromFilename,
                             date: date,
-                            issuer: issuer,
+                            issuer: PROVIDER_NAME,
                             fileName: file.name
                         });
                     } catch (error) {
@@ -270,7 +410,7 @@
                             studentName: "Unknown (Error parsing)",
                             studentId: studentIdFromFilename,
                             date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
-                            issuer: "Unknown",
+                            issuer: PROVIDER_NAME,
                             fileName: file.name
                         });
                     }
@@ -302,6 +442,8 @@
                 }
                 
                 folderPermissionGranted = true;
+                folderPath.value = '📁 Folder selected';
+                folderPath.style.color = '#0b2b4a';
                 await scanFolderHandle(folderHandle);
                 
             } catch (error) {
@@ -386,7 +528,7 @@
             }, 1000);
         }
 
-        // ---------- RENDER FUNCTION ----------
+        // ---------- RENDER FUNCTION (TABLE FORMAT) ----------
         function renderReport(formsArray) {
             reportList.innerHTML = '';
 
@@ -409,18 +551,18 @@
                     <strong style="font-style: normal; color: #2d1f14;">TC record not found</strong> 
                     for “${searchInput.value || 'this student'}”.
                     <div class="action-group">
-                        <button class="action-btn" id="prepareTcBtn"><i class="fas fa-file-word"></i> Open & Fill Form (TC-${formId}.docx)</button>
+                        <button class="action-btn download-btn" id="downloadTcBtn"><i class="fas fa-download"></i> Download Form (TC-${formId}.docx)</button>
                     </div>
                     <div style="margin-top: 8px; font-size: 0.85rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
-                        <i class="fas fa-info-circle"></i> The form will open as "TC-${formId}.docx"
+                        <i class="fas fa-info-circle"></i> The form will be downloaded as "TC-${formId}.docx"
                     </div>
                 `;
                 reportList.appendChild(notFoundDiv);
                 recordCount.textContent = `0 records`;
                 
-                document.getElementById('prepareTcBtn')?.addEventListener('click', function(e) {
+                document.getElementById('downloadTcBtn')?.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    openFormWithName(formId);
+                    downloadFormWithName(formId);
                 });
                 return;
             }
@@ -429,56 +571,64 @@
                 return b.studentId.localeCompare(a.studentId);
             });
 
-            let fragment = document.createDocumentFragment();
-            sorted.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'report-item';
-                div.innerHTML = `
-                    <span class="student-name">${item.studentName}</span>
-                    <span class="student-id">${item.studentId}</span>
-                    <span>has already been provided with TC on</span>
-                    <strong>${item.date}</strong>
-                    <span>by</span>
-                    <span class="issuer-name">${item.issuer}</span>
-                    <span class="file-name">📄 ${item.fileName || ''}</span>
-                `;
-                fragment.appendChild(div);
-            });
-            reportList.appendChild(fragment);
-            recordCount.textContent = `${sorted.length} record${sorted.length > 1 ? 's' : ''}`;
-        }
-
-        // ---------- OPEN FORM WITH RENAMED FILE ----------
-        function openFormWithName(studentId) {
-            if (!studentId || studentId === "ID") {
-                alert('Please enter a valid Student ID (6-8 digits) first.');
-                return;
-            }
+            // Create table
+            const table = document.createElement('table');
+            table.className = 'report-table';
             
-            if (FORM_TEMPLATE_URL && FORM_TEMPLATE_URL !== "YOUR_WORD_DOCUMENT_URL_HERE") {
-                const win = window.open(FORM_TEMPLATE_URL, '_blank');
-                if (win) {
-                    win.onload = function() {
-                        setTimeout(() => {
-                            const confirmSave = confirm(
-                                `The form template is now open.\n\n` +
-                                `To save it with the name "TC-${studentId}.docx":\n` +
-                                `1. Click "File" → "Save As"\n` +
-                                `2. Name it "TC-${studentId}.docx"\n` +
-                                `3. Choose "Word Document" format\n\n` +
-                                `Click OK to continue filling the form.`
-                            );
-                            if (!confirmSave) {
-                                win.close();
-                            }
-                        }, 1000);
-                    };
-                } else {
-                    alert('Please allow pop-ups to open the document.');
-                }
-            } else {
-                alert('Please set the FORM_TEMPLATE_URL in the script to your Word document.');
-            }
+            // Table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ['S. No.', "Student's Name", 'ID Number', 'TC Date', 'Provider', 'File Name'];
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Table body
+            const tbody = document.createElement('tbody');
+            sorted.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                
+                // S. No.
+                const snoTd = document.createElement('td');
+                snoTd.className = 'sno-col';
+                snoTd.textContent = index + 1;
+                tr.appendChild(snoTd);
+                
+                // Student Name
+                const nameTd = document.createElement('td');
+                nameTd.textContent = item.studentName;
+                tr.appendChild(nameTd);
+                
+                // ID Number
+                const idTd = document.createElement('td');
+                idTd.textContent = item.studentId;
+                tr.appendChild(idTd);
+                
+                // TC Date
+                const dateTd = document.createElement('td');
+                dateTd.textContent = item.date;
+                tr.appendChild(dateTd);
+                
+                // Provider
+                const providerTd = document.createElement('td');
+                providerTd.textContent = PROVIDER_NAME;
+                tr.appendChild(providerTd);
+                
+                // File Name
+                const fileTd = document.createElement('td');
+                fileTd.className = 'file-name-col';
+                fileTd.textContent = item.fileName || '';
+                tr.appendChild(fileTd);
+                
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            reportList.appendChild(table);
+            recordCount.textContent = `${sorted.length} record${sorted.length > 1 ? 's' : ''}`;
         }
 
         // ---------- SEARCH ----------
