@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Credits · Auto Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- mammoth.js for DOCX reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        /* --- STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #f4f7fc; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { max-width: 1100px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25); padding: 30px 35px; transition: 0.2s; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+        .logo-area { display: flex; align-items: center; gap: 18px; }
+        .logo-placeholder { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+        .uni-name { font-weight: 600; font-size: 1.5rem; color: #0b2b4a; letter-spacing: -0.3px; }
+        .badge { background: #eef3fa; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; color: #1f3a5f; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .scan-area { background: #f9faff; border-radius: 28px; padding: 28px 25px; margin: 28px 0 20px 0; border: 1px dashed #b7c9e2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px; }
+        .folder-input-group { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex: 1; }
+        .folder-input-group input { flex: 1; min-width: 300px; padding: 12px 18px; border: 1px solid #d6e0ed; border-radius: 60px; font-size: 0.95rem; background: white; }
+        .folder-input-group input:focus { outline: none; border-color: #0b2b4a; }
+        .auto-scan-btn { background: #0b2b4a; color: white; border: none; padding: 12px 28px; border-radius: 60px; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.15s; box-shadow: 0 4px 10px rgba(11,43,74,0.15); }
+        .auto-scan-btn:hover { background: #1e3f62; transform: scale(1.01); }
+        .auto-scan-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .search-section { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: white; padding: 4px 8px 4px 18px; border-radius: 60px; border: 1px solid #d6e0ed; }
+        .search-section input { border: none; padding: 8px 5px; font-size: 0.95rem; min-width: 150px; outline: none; background: transparent; }
+        .search-section button { background: #eef3fa; border: none; padding: 6px 16px; border-radius: 40px; font-weight: 500; color: #1f3a5f; cursor: pointer; transition: 0.1s; }
+        .search-section button:hover { background: #dce5f0; }
+        .report-container { background: #ffffff; border-radius: 20px; padding: 10px 0 5px 0; }
+        .report-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; }
+        .report-header h2 { font-weight: 600; font-size: 1.5rem; color: #0b1f33; display: flex; align-items: center; gap: 10px; }
+        .report-header h2 i { color: #2b6c9e; }
+        .record-count { background: #dce5f0; padding: 4px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; color: #1e3d60; }
+        .report-list { background: #f8faff; border-radius: 18px; padding: 12px 0; min-height: 130px; border: 1px solid #e4ebf5; }
+        .report-item {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            padding: 8px 24px;
+            border-bottom: 1px solid #e6edf6;
+            transition: 0.1s;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+        .report-item:last-child { border-bottom: none; }
+        .report-item:hover { background: #f0f6ff; }
+        .report-item .student-name { font-weight: bold; }
+        .report-item .student-id { font-weight: bold; }
+        .report-item .issuer-name { font-weight: bold; }
+        .report-item .file-name { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 9pt;
+            color: #7a8fa5;
+            margin-left: auto;
+        }
+        .empty-message, .not-found-message { 
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #5c7390; 
+            padding: 32px 20px; 
+            text-align: center; 
+            font-style: italic; 
+        }
+        .not-found-message { background: #fff6f0; border-radius: 18px; border: 1px solid #ffe4d6; }
+        .action-btn { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0b2b4a; 
+            color: white; 
+            border: none; 
+            padding: 8px 22px; 
+            border-radius: 40px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: 0.1s; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin: 5px; 
+        }
+        .action-btn:hover { background: #1e3f62; }
+        .action-btn i { font-size: 0.9rem; }
+        .file-status { font-size: 0.85rem; color: #2f6b9e; background: #eaf1fb; padding: 4px 14px; border-radius: 30px; font-family: 'Segoe UI', Arial, sans-serif; }
+        .footer-note { margin-top: 20px; font-size: 0.8rem; color: #4c6990; text-align: right; border-top: 1px solid #e2ebf5; padding-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; font-family: 'Segoe UI', Arial, sans-serif; }
+        .sample-logo { display: flex; align-items: center; gap: 6px; }
+        .sample-logo i { font-size: 1.4rem; color: #1f4b77; }
+        .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
+        .progress-bar { width: 100%; height: 4px; background: #e0e7ef; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #0b2b4a; width: 0%; transition: width 0.3s; border-radius: 4px; }
+        @media (max-width: 700px) { .card { padding: 20px; } .scan-area { flex-direction: column; align-items: stretch; } .folder-input-group input { min-width: auto; } .search-section { border-radius: 30px; padding: 6px 12px; } .logo-placeholder { width: 80px; height: 80px; } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo-area">
+            <div class="logo-placeholder">
+                <img src="https://raw.githubusercontent.com/hameedktk09/cms/main/ASU-logo.png" alt="A'Sharqiyah University Logo">
+            </div>
+            <span class="uni-name"><i class="fas fa-graduation-cap" style="margin-right: 8px; color: #2b6c9e;"></i> A'Sharqiyah University</span>
+        </div>
+        <div class="badge"><i class="fas fa-file-alt"></i> Transfer Credits · Auto Scanner</div>
+    </div>
+
+    <!-- SCAN AREA -->
+    <div class="scan-area">
+        <div class="folder-input-group">
+            <i class="fas fa-folder" style="color: #0b2b4a; font-size: 1.2rem;"></i>
+            <input type="text" id="folderPath" value="C:\Users\h.rehman\Dropbox\TC(s)-2026" placeholder="Enter folder path..." readonly>
+            <button class="auto-scan-btn" id="autoScanBtn"><i class="fas fa-play"></i> Auto-Scan</button>
+            <span class="file-status" id="fileStatus">📂 Ready</span>
+        </div>
+        <div class="search-section">
+            <i class="fas fa-user-graduate" style="color: #5c7a9a;"></i>
+            <input type="text" id="searchInput" placeholder="Search Name or ID...">
+            <button id="searchBtn"><i class="fas fa-arrow-right"></i> Find</button>
+        </div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <!-- REPORT -->
+    <div class="report-container">
+        <div class="report-header">
+            <h2><i class="fas fa-list-ul"></i> Transfer Credit Report</h2>
+            <span class="record-count" id="recordCount">0 records</span>
+        </div>
+        <div class="report-list" id="reportList">
+            <div class="empty-message"><i class="fas fa-folder-open" style="margin-right: 12px;"></i> Click "Auto-Scan" to scan the folder for TC documents.</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-note">
+        <div class="sample-logo"><i class="fas fa-user-graduate"></i> <span style="font-weight: 500;">College Dean: DR. WALEED AL HARTHY</span></div>
+        <div><i class="fas fa-check-circle" style="color: #1a764a;"></i> <span style="font-weight: 400;">Admissions & Registration</span></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DOM refs
+        const reportList = document.getElementById('reportList');
+        const recordCount = document.getElementById('recordCount');
+        const folderPath = document.getElementById('folderPath');
+        const autoScanBtn = document.getElementById('autoScanBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const fileStatus = document.getElementById('fileStatus');
+        const progressFill = document.getElementById('progressFill');
+
+        // --- CONFIGURATION: SET YOUR WORD DOCUMENT URL HERE ---
+        const FORM_TEMPLATE_URL = "https://raw.githubusercontent.com/hameedktk09/cms/main/Transfer%20Credits%20form.docx";
+
+        let allRecords = [];
+        let isScanning = false;
+        let folderHandle = null;
+        let folderPermissionGranted = false;
+        let lastSearchedId = "";
+
+        // ---------- CONVERT TO SENTENCE CASE ----------
+        function toSentenceCase(text) {
+            if (!text) return text;
+            let result = text.toLowerCase();
+            const words = result.split(' ');
+            const processedWords = words.map(word => {
+                if (word.endsWith('.')) {
+                    return word.toUpperCase();
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            });
+            result = processedWords.join(' ');
+            return result;
+        }
+
+        // ---------- EXTRACT DATA FROM DOCX FILE ----------
+        async function extractRecordsFromFile(file) {
+            return new Promise((resolve) => {
+                const nameMatch = file.name.match(/^TC-(\d{6,8})\.docx$/i);
+                if (!nameMatch) {
+                    resolve(null);
+                    return;
+                }
+
+                const studentIdFromFilename = nameMatch[1];
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer });
+                        const text = result.value;
+                        
+                        let studentName = "Unknown Student";
+                        let nameMatch = text.match(/Student\s*Name\s*[:：]\s*([^\n\r]+)/i);
+                        if (nameMatch) {
+                            studentName = nameMatch[1].trim();
+                        }
+                        
+                        if (studentName === "Unknown Student") {
+                            nameMatch = text.match(/Name\s*[:：]\s*([^\n\r]+)/i);
+                            if (nameMatch) {
+                                studentName = nameMatch[1].trim();
+                            }
+                        }
+                        
+                        if (studentName === "Unknown Student") {
+                            const lines = text.split('\n');
+                            for (let i = 0; i < lines.length; i++) {
+                                if (lines[i].match(/student/i)) {
+                                    if (i + 1 < lines.length && lines[i + 1].trim().length > 3) {
+                                        const possibleName = lines[i + 1].trim();
+                                        if (/^[A-Za-z\s\.]+$/.test(possibleName) && possibleName.length > 3) {
+                                            studentName = possibleName;
+                                            break;
+                                        }
+                                    }
+                                    const afterStudent = lines[i].replace(/student/i, '').trim();
+                                    if (afterStudent.length > 3 && /^[A-Za-z\s\.]+$/.test(afterStudent)) {
+                                        studentName = afterStudent;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        let extractedId = studentIdFromFilename;
+                        const idMatch = text.match(/Student\s*ID\s*[:：]\s*(\d{6,8})/i);
+                        if (idMatch) {
+                            extractedId = idMatch[1].trim();
+                        }
+                        
+                        const finalId = studentIdFromFilename;
+                        let date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+                        const dateMatch = text.match(/(?:Date|Submission Date)\s*[:：]\s*(\d{2}[-/]\d{2}[-/]\d{4})/i);
+                        if (dateMatch) {
+                            date = dateMatch[1].replace(/\//g, '-');
+                        }
+                        
+                        let issuer = "Unknown";
+                        const issuerPatterns = [
+                            /(?:Dean|Director|Head|Issuer|Approved by|Signature)\s*[:：]\s*([^\n\r]+)/i,
+                            /(?:Dean|Director|Head|Issuer|Approved by|Signature)\s*([^\n\r]+)/i,
+                        ];
+                        for (const pattern of issuerPatterns) {
+                            const match = text.match(pattern);
+                            if (match && match[1] && match[1].trim().length > 2) {
+                                issuer = match[1].trim();
+                                break;
+                            }
+                        }
+                        
+                        studentName = studentName.replace(/\s*(Student|Name|ID|Number|Date|Signature)/gi, '').trim();
+                        issuer = toSentenceCase(issuer);
+                        
+                        resolve({
+                            studentName: studentName,
+                            studentId: finalId,
+                            date: date,
+                            issuer: issuer,
+                            fileName: file.name
+                        });
+                    } catch (error) {
+                        console.error("Error parsing DOCX:", error);
+                        resolve({
+                            studentName: "Unknown (Error parsing)",
+                            studentId: studentIdFromFilename,
+                            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
+                            issuer: "Unknown",
+                            fileName: file.name
+                        });
+                    }
+                };
+                reader.onerror = function() {
+                    console.error("FileReader error for:", file.name);
+                    resolve(null);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // ---------- SCAN FOLDER WITH REMEMBERED PERMISSION ----------
+        async function scanFolderWithPermission() {
+            if (isScanning) return;
+            
+            try {
+                if (folderHandle && folderPermissionGranted) {
+                    await scanFolderHandle(folderHandle);
+                    return;
+                }
+                
+                folderHandle = await window.showDirectoryPicker();
+                const permission = await folderHandle.requestPermission({ mode: 'read' });
+                if (permission !== 'granted') {
+                    fileStatus.textContent = '⚠️ Permission denied to read folder';
+                    fileStatus.style.background = "#fff3d6";
+                    return;
+                }
+                
+                folderPermissionGranted = true;
+                await scanFolderHandle(folderHandle);
+                
+            } catch (error) {
+                if (error.name !== 'AbortError' && error.name !== 'SecurityError') {
+                    console.error("Error accessing folder:", error);
+                    fileStatus.textContent = `⚠️ Could not access folder: ${error.message}`;
+                    fileStatus.style.background = "#fff3d6";
+                } else {
+                    fileStatus.textContent = `📂 Folder selection cancelled`;
+                    fileStatus.style.background = "#eaf1fb";
+                }
+            }
+        }
+
+        // ---------- SCAN FOLDER HANDLE ----------
+        async function scanFolderHandle(handle) {
+            fileStatus.textContent = `⏳ Scanning folder...`;
+            fileStatus.style.background = "#fff3d6";
+            autoScanBtn.disabled = true;
+            isScanning = true;
+            progressFill.style.width = '0%';
+            
+            const entries = [];
+            for await (const entry of handle.values()) {
+                if (entry.kind === 'file') {
+                    entries.push(entry);
+                }
+            }
+            
+            const tcFiles = entries.filter(entry => {
+                return entry.name.match(/^TC-\d{6,8}\.docx$/i);
+            });
+            
+            if (tcFiles.length === 0) {
+                fileStatus.textContent = `⚠️ No TC-{ID}.docx files found in the selected folder`;
+                fileStatus.style.background = "#fff3d6";
+                autoScanBtn.disabled = false;
+                isScanning = false;
+                progressFill.style.width = '100%';
+                return;
+            }
+            
+            fileStatus.textContent = `⏳ Processing ${tcFiles.length} TC files...`;
+            
+            const newRecords = [];
+            let processed = 0;
+            
+            for (const entry of tcFiles) {
+                try {
+                    const file = await entry.getFile();
+                    const record = await extractRecordsFromFile(file);
+                    if (record) {
+                        newRecords.push(record);
+                    }
+                    processed++;
+                    const percent = (processed / tcFiles.length) * 100;
+                    progressFill.style.width = `${percent}%`;
+                    fileStatus.textContent = `⏳ Processing ${processed}/${tcFiles.length} files... (${record?.studentName || 'Unknown'})`;
+                } catch (e) {
+                    console.error("Error processing file:", entry.name, e);
+                }
+            }
+            
+            const existingIds = new Set(allRecords.map(r => r.studentId));
+            let addedCount = 0;
+            for (const rec of newRecords) {
+                if (!existingIds.has(rec.studentId)) {
+                    allRecords.push(rec);
+                    existingIds.add(rec.studentId);
+                    addedCount++;
+                }
+            }
+            
+            fileStatus.textContent = `✅ ${allRecords.length} TC records extracted from ${tcFiles.length} file(s)`;
+            fileStatus.style.background = "#e6f5e6";
+            renderReport(allRecords);
+            
+            autoScanBtn.disabled = false;
+            isScanning = false;
+            setTimeout(() => {
+                progressFill.style.width = '0%';
+            }, 1000);
+        }
+
+        // ---------- RENDER FUNCTION ----------
+        function renderReport(formsArray) {
+            reportList.innerHTML = '';
+
+            if (!formsArray || formsArray.length === 0) {
+                const notFoundDiv = document.createElement('div');
+                notFoundDiv.className = 'not-found-message';
+                
+                const searchQuery = searchInput.value.trim();
+                let formId = searchQuery;
+                if (formId.match(/^\d{6,8}$/)) {
+                    lastSearchedId = formId;
+                } else if (lastSearchedId) {
+                    formId = lastSearchedId;
+                } else {
+                    formId = "ID";
+                }
+                
+                notFoundDiv.innerHTML = `
+                    <i class="fas fa-file-alt" style="font-size: 1.8rem; display: block; margin-bottom: 12px; color: #b38b6d;"></i>
+                    <strong style="font-style: normal; color: #2d1f14;">TC record not found</strong> 
+                    for “${searchInput.value || 'this student'}”.
+                    <div class="action-group">
+                        <button class="action-btn" id="prepareTcBtn"><i class="fas fa-file-word"></i> Open & Fill Form (TC-${formId}.docx)</button>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.85rem; color: #5c6f87; font-family: 'Segoe UI', Arial, sans-serif;">
+                        <i class="fas fa-info-circle"></i> The form will open as "TC-${formId}.docx"
+                    </div>
+                `;
+                reportList.appendChild(notFoundDiv);
+                recordCount.textContent = `0 records`;
+                
+                document.getElementById('prepareTcBtn')?.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openFormWithName(formId);
+                });
+                return;
+            }
+
+            const sorted = [...formsArray].sort((a, b) => {
+                return b.studentId.localeCompare(a.studentId);
+            });
+
+            let fragment = document.createDocumentFragment();
+            sorted.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'report-item';
+                div.innerHTML = `
+                    <span class="student-name">${item.studentName}</span>
+                    <span class="student-id">${item.studentId}</span>
+                    <span>has already been provided with TC on</span>
+                    <strong>${item.date}</strong>
+                    <span>by</span>
+                    <span class="issuer-name">${item.issuer}</span>
+                    <span class="file-name">📄 ${item.fileName || ''}</span>
+                `;
+                fragment.appendChild(div);
+            });
+            reportList.appendChild(fragment);
+            recordCount.textContent = `${sorted.length} record${sorted.length > 1 ? 's' : ''}`;
+        }
+
+        // ---------- OPEN FORM WITH RENAMED FILE ----------
+        function openFormWithName(studentId) {
+            if (!studentId || studentId === "ID") {
+                alert('Please enter a valid Student ID (6-8 digits) first.');
+                return;
+            }
+            
+            if (FORM_TEMPLATE_URL && FORM_TEMPLATE_URL !== "YOUR_WORD_DOCUMENT_URL_HERE") {
+                const win = window.open(FORM_TEMPLATE_URL, '_blank');
+                if (win) {
+                    win.onload = function() {
+                        setTimeout(() => {
+                            const confirmSave = confirm(
+                                `The form template is now open.\n\n` +
+                                `To save it with the name "TC-${studentId}.docx":\n` +
+                                `1. Click "File" → "Save As"\n` +
+                                `2. Name it "TC-${studentId}.docx"\n` +
+                                `3. Choose "Word Document" format\n\n` +
+                                `Click OK to continue filling the form.`
+                            );
+                            if (!confirmSave) {
+                                win.close();
+                            }
+                        }, 1000);
+                    };
+                } else {
+                    alert('Please allow pop-ups to open the document.');
+                }
+            } else {
+                alert('Please set the FORM_TEMPLATE_URL in the script to your Word document.');
+            }
+        }
+
+        // ---------- SEARCH ----------
+        function performSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+            
+            const idMatch = query.match(/\d{6,8}/);
+            if (idMatch) {
+                lastSearchedId = idMatch[0];
+            }
+            
+            if (!query) {
+                renderReport(allRecords);
+                return;
+            }
+            const filtered = allRecords.filter(item => 
+                item.studentName.toLowerCase().includes(query) || 
+                item.studentId.includes(query)
+            );
+            renderReport(filtered);
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        autoScanBtn.addEventListener('click', scanFolderWithPermission);
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(); });
+
+        renderReport([]);
+    })();
+</script>
+</body>
+</html>
