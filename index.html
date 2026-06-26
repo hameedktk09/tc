@@ -7,14 +7,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- mammoth.js for DOCX reading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- PDF.js for PDF reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
         /* --- STYLES --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #f4f7fc; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .card { max-width: 1100px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25); padding: 30px 35px; transition: 0.2s; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f7; padding-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-        .logo-area { display: flex; align-items: center; gap: 14px; }
-        .logo-placeholder { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .logo-area { display: flex; align-items: center; gap: 18px; }
+        .logo-placeholder { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
         .uni-name { font-weight: 700; font-size: 1.3rem; color: #0b2b4a; letter-spacing: -0.3px; line-height: 1.1; }
         .uni-sub { font-weight: 400; font-size: 0.85rem; color: #1f4b77; display: block; letter-spacing: -0.1px; }
@@ -122,12 +124,21 @@
         .download-btn:hover { background: #145d3a; }
         .folder-icon { color: #0b2b4a; font-size: 1rem; }
         .sort-indicator { font-size: 0.7rem; margin-left: 4px; color: #8aa9c9; }
+        .file-type-badge { 
+            font-size: 0.6rem; 
+            background: #dce5f0; 
+            color: #1f3a5f; 
+            padding: 1px 6px; 
+            border-radius: 10px; 
+            margin-left: 4px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
         @media (max-width: 700px) { 
             .card { padding: 16px 18px; } 
             .scan-area { flex-direction: column; align-items: stretch; padding: 16px; } 
             .folder-input-group input { min-width: auto; } 
             .search-section { border-radius: 30px; padding: 4px 8px; } 
-            .logo-placeholder { width: 70px; height: 70px; } 
+            .logo-placeholder { width: 100px; height: 100px; } 
             .uni-name { font-size: 1rem; } 
             .uni-sub { font-size: 0.7rem; }
             .report-table { font-size: 9pt; }
@@ -204,6 +215,9 @@
         const LOGO_URL = "https://raw.githubusercontent.com/hameedktk09/tc-tracker/main/asulogo.png";
         const PROVIDER_NAME = "Dr. Waleed Al Harthy";
 
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
         // Update the logo dynamically
         document.querySelector('.logo-placeholder img').src = LOGO_URL;
 
@@ -215,7 +229,6 @@
 
         // ---------- PARSE DATE TO COMPARE ----------
         function parseDate(dateStr) {
-            // Expected format: DD-MM-YYYY
             if (!dateStr) return new Date(0);
             const parts = dateStr.split('-');
             if (parts.length === 3) {
@@ -229,104 +242,108 @@
             return new Date(0);
         }
 
-        // ---------- EXTRACT DATE FROM "NAME / SIGNATURE" SECTION ----------
-        function extractDateFromSignature(text) {
-            console.log("Looking for date in signature section...");
-            
-            const signatureIndex = text.search(/NAME\s*\/\s*SIGNATURE/i);
-            if (signatureIndex !== -1) {
-                const afterSignature = text.substring(signatureIndex);
-                console.log("Text after NAME/SIGNATURE:", afterSignature.substring(0, 300));
-                
-                const dateMatch = afterSignature.match(/DATE\s*[:：]\s*([^\n\r]+)/i);
-                if (dateMatch && dateMatch[1]) {
-                    const dateStr = dateMatch[1].trim();
-                    console.log("Found date after NAME/SIGNATURE with DATE label:", dateStr);
-                    return formatDate(dateStr);
+        // ---------- EXTRACT STUDENT NAME ----------
+        function extractStudentName(text) {
+            // Try to find "Student Name:" pattern first
+            let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
+            if (match && match[1]) {
+                let name = match[1].trim().replace(/\s{2,}/g, ' ');
+                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+                if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
+                    return name;
                 }
-                
-                const lines = afterSignature.split('\n');
-                for (let i = 0; i < Math.min(5, lines.length); i++) {
-                    const line = lines[i].trim();
-                    if (line) {
-                        const datePatterns = [
-                            /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
-                            /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
-                            /\b(\d{2})[-/](\d{2})[-/](\d{2})\b/,
-                        ];
-                        for (const pattern of datePatterns) {
-                            const match = line.match(pattern);
-                            if (match) {
-                                console.log("Found date in signature section line:", line);
-                                return formatDate(line);
-                            }
+            }
+            
+            // Try "Name:" pattern
+            match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
+            if (match && match[1]) {
+                let name = match[1].trim().replace(/\s{2,}/g, ' ');
+                name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+                if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
+                    return name;
+                }
+            }
+            
+            // Look for a name at the very beginning of the document
+            const lines = text.split(/[\n\.]/);
+            for (let i = 0; i < Math.min(5, lines.length); i++) {
+                const line = lines[i].trim();
+                if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
+                    const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
+                    let isExcluded = false;
+                    for (const word of excludeWords) {
+                        if (line.match(new RegExp(word, 'i'))) {
+                            isExcluded = true;
+                            break;
                         }
                     }
+                    if (!isExcluded) {
+                        return line;
+                    }
                 }
             }
             
-            const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r]+)/i);
+            // Look for a name after "Student" keyword
+            const studentIndex = text.search(/\bStudent\b/i);
+            if (studentIndex !== -1) {
+                const afterStudent = text.substring(studentIndex + 7);
+                const nameMatch = afterStudent.match(/^[^,.\n]*/);
+                if (nameMatch) {
+                    let name = nameMatch[0].trim();
+                    name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
+                    if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
+                        return name;
+                    }
+                }
+            }
+            
+            return "Unknown Student";
+        }
+
+        // ---------- EXTRACT DATE ----------
+        function extractDateFromText(text) {
+            // Look for DATE in HEAD OF DEPARTMENT section
+            const headDeptMatch = text.match(/HEAD\s*OF\s*DEPARTMENT[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
+            if (headDeptMatch && headDeptMatch[1]) {
+                const dateStr = headDeptMatch[1].trim();
+                const formatted = formatDate(dateStr);
+                if (formatted) return formatted;
+            }
+            
+            // Look for DATE in COLLEGE DEAN section
+            const deanMatch = text.match(/COLLEGE\s*DEAN[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
+            if (deanMatch && deanMatch[1]) {
+                const dateStr = deanMatch[1].trim();
+                const formatted = formatDate(dateStr);
+                if (formatted) return formatted;
+            }
+            
+            // Look for DATE in NAME / SIGNATURE section
+            const signatureMatch = text.match(/NAME\s*\/\s*SIGNATURE[^\n]*\n[^\n]*DATE\s*[:：]\s*([^\n\r,]+)/i);
+            if (signatureMatch && signatureMatch[1]) {
+                const dateStr = signatureMatch[1].trim();
+                const formatted = formatDate(dateStr);
+                if (formatted) return formatted;
+            }
+            
+            // Look for any DATE label
+            const dateLabelMatch = text.match(/DATE\s*[:：]\s*([^\n\r,]+)/i);
             if (dateLabelMatch && dateLabelMatch[1]) {
                 const dateStr = dateLabelMatch[1].trim();
-                console.log("Found date with DATE label:", dateStr);
-                return formatDate(dateStr);
+                const formatted = formatDate(dateStr);
+                if (formatted) return formatted;
             }
             
-            console.log("No date found in signature section, using fallback");
-            return extractDateFallback(text);
-        }
-
-        // ---------- FORMAT DATE TO DD-MM-YYYY ----------
-        function formatDate(dateStr) {
-            dateStr = dateStr.trim();
-            console.log("Formatting date string:", dateStr);
-            
-            const monthNames = {
-                'january': '01', 'february': '02', 'march': '03', 'april': '04',
-                'may': '05', 'june': '06', 'july': '07', 'august': '08',
-                'september': '09', 'october': '10', 'november': '11', 'december': '12'
-            };
-            
-            let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
-            if (match) {
-                const day = match[1].padStart(2, '0');
-                const month = monthNames[match[2].toLowerCase()];
-                const year = match[3];
-                console.log(`Formatted as: ${day}-${month}-${year}`);
-                return `${day}-${month}-${year}`;
-            }
-            
-            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
-            if (match) {
-                console.log(`Formatted as: ${match[1]}-${match[2]}-${match[3]}`);
-                return `${match[1]}-${match[2]}-${match[3]}`;
-            }
-            
-            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
-            if (match) {
-                const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
-                console.log(`Formatted as: ${match[1]}-${match[2]}-${year}`);
-                return `${match[1]}-${match[2]}-${year}`;
-            }
-            
-            console.log("Could not parse date, returning original:", dateStr);
-            return dateStr;
-        }
-
-        // ---------- FALLBACK DATE EXTRACTION ----------
-        function extractDateFallback(text) {
-            const labelPatterns = [
-                /(?:Date|Submission Date|TC Date|Issued|Provided on|Approved on)\s*[:：]\s*([^\n\r]+)/i,
+            // Fallback: look for any date pattern
+            const fallbackPatterns = [
+                /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i,
+                /\b(\d{2})[-/](\d{2})[-/](\d{4})\b/,
             ];
-            
-            for (const pattern of labelPatterns) {
+            for (const pattern of fallbackPatterns) {
                 const match = text.match(pattern);
-                if (match && match[1]) {
-                    const possibleDate = match[1].trim();
-                    const formatted = formatDate(possibleDate);
-                    if (formatted !== possibleDate) {
-                        return formatted;
-                    }
+                if (match) {
+                    const formatted = formatDate(match[0]);
+                    if (formatted) return formatted;
                 }
             }
             
@@ -337,7 +354,140 @@
             return `${d}-${m}-${y}`;
         }
 
-        // ---------- DOWNLOAD FORM WITH RENAMED FILE ----------
+        // ---------- FORMAT DATE TO DD-MM-YYYY ----------
+        function formatDate(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim().replace(/,/g, '');
+            
+            const monthNames = {
+                'january': '01', 'february': '02', 'march': '03', 'april': '04',
+                'may': '05', 'june': '06', 'july': '07', 'august': '08',
+                'september': '09', 'october': '10', 'november': '11', 'december': '12'
+            };
+            
+            // Try DD Month YYYY
+            let match = dateStr.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i);
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                const month = monthNames[match[2].toLowerCase()];
+                const year = match[3];
+                return `${day}-${month}-${year}`;
+            }
+            
+            // Try DD-MM-YYYY or DD/MM/YYYY
+            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
+            if (match) {
+                return `${match[1]}-${match[2]}-${match[3]}`;
+            }
+            
+            // Try DD-MM-YY or DD/MM-YY
+            match = dateStr.match(/(\d{2})[-/](\d{2})[-/](\d{2})/);
+            if (match) {
+                const year = (parseInt(match[3]) > 30) ? `19${match[3]}` : `20${match[3]}`;
+                return `${match[1]}-${match[2]}-${year}`;
+            }
+            
+            return null;
+        }
+
+        // ---------- EXTRACT DATA FROM DOCX FILE ----------
+        async function extractFromDocx(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer });
+                        const text = result.value;
+                        resolve({
+                            studentName: extractStudentName(text),
+                            date: extractDateFromText(text)
+                        });
+                    } catch (error) {
+                        console.error("Error parsing DOCX:", error);
+                        resolve(null);
+                    }
+                };
+                reader.onerror = function() {
+                    console.error("FileReader error for DOCX");
+                    resolve(null);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // ---------- EXTRACT DATA FROM PDF FILE ----------
+        async function extractFromPdf(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n';
+                }
+                
+                return {
+                    studentName: extractStudentName(fullText),
+                    date: extractDateFromText(fullText)
+                };
+            } catch (error) {
+                console.error("Error parsing PDF:", error);
+                return null;
+            }
+        }
+
+        // ---------- EXTRACT DATA FROM FILE ----------
+        async function extractRecordsFromFile(file) {
+            return new Promise((resolve) => {
+                const nameMatch = file.name.match(/^TC-(\d{6,8})\.(docx|pdf)$/i);
+                if (!nameMatch) {
+                    resolve(null);
+                    return;
+                }
+
+                const studentIdFromFilename = nameMatch[1];
+                const fileExt = nameMatch[2].toLowerCase();
+                
+                let extractPromise;
+                if (fileExt === 'docx') {
+                    extractPromise = extractFromDocx(file);
+                } else if (fileExt === 'pdf') {
+                    extractPromise = extractFromPdf(file);
+                } else {
+                    resolve(null);
+                    return;
+                }
+                
+                extractPromise.then(result => {
+                    if (result) {
+                        resolve({
+                            studentName: result.studentName,
+                            studentId: studentIdFromFilename,
+                            date: result.date,
+                            issuer: PROVIDER_NAME,
+                            fileName: file.name
+                        });
+                    } else {
+                        resolve({
+                            studentName: "Unknown (Extraction failed)",
+                            studentId: studentIdFromFilename,
+                            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
+                            issuer: PROVIDER_NAME,
+                            fileName: file.name
+                        });
+                    }
+                }).catch(error => {
+                    console.error("Extraction error:", error);
+                    resolve(null);
+                });
+            });
+        }
+
+        // ---------- DOWNLOAD FORM ----------
         function downloadFormWithName(studentId) {
             if (!studentId || studentId === "ID") {
                 alert('Please enter a valid Student ID (6-8 digits) first.');
@@ -370,93 +520,7 @@
                 });
         }
 
-        // ---------- EXTRACT DATA FROM DOCX FILE ----------
-        async function extractRecordsFromFile(file) {
-            return new Promise((resolve) => {
-                const nameMatch = file.name.match(/^TC-(\d{6,8})\.docx$/i);
-                if (!nameMatch) {
-                    resolve(null);
-                    return;
-                }
-
-                const studentIdFromFilename = nameMatch[1];
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        const arrayBuffer = e.target.result;
-                        const result = await mammoth.extractRawText({ arrayBuffer });
-                        const text = result.value;
-                        
-                        console.log("=== Extracted text from DOCX ===");
-                        console.log(text.substring(0, 500) + "...");
-                        console.log("=== End of text sample ===");
-                        
-                        let studentName = "Unknown Student";
-                        let nameMatch = text.match(/Student\s*Name\s*[:：]\s*([^\n\r]+)/i);
-                        if (nameMatch) {
-                            studentName = nameMatch[1].trim();
-                        }
-                        
-                        if (studentName === "Unknown Student") {
-                            nameMatch = text.match(/Name\s*[:：]\s*([^\n\r]+)/i);
-                            if (nameMatch) {
-                                studentName = nameMatch[1].trim();
-                            }
-                        }
-                        
-                        if (studentName === "Unknown Student") {
-                            const lines = text.split('\n');
-                            for (let i = 0; i < lines.length; i++) {
-                                if (lines[i].match(/student/i)) {
-                                    if (i + 1 < lines.length && lines[i + 1].trim().length > 3) {
-                                        const possibleName = lines[i + 1].trim();
-                                        if (/^[A-Za-z\s\.]+$/.test(possibleName) && possibleName.length > 3) {
-                                            studentName = possibleName;
-                                            break;
-                                        }
-                                    }
-                                    const afterStudent = lines[i].replace(/student/i, '').trim();
-                                    if (afterStudent.length > 3 && /^[A-Za-z\s\.]+$/.test(afterStudent)) {
-                                        studentName = afterStudent;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        studentName = studentName.replace(/\s*(Student|Name|ID|Number|Date|Signature)/gi, '').trim();
-                        
-                        let date = extractDateFromSignature(text);
-                        
-                        console.log(`Extracted: Name="${studentName}", ID="${studentIdFromFilename}", Date="${date}"`);
-                        
-                        resolve({
-                            studentName: studentName,
-                            studentId: studentIdFromFilename,
-                            date: date,
-                            issuer: PROVIDER_NAME,
-                            fileName: file.name
-                        });
-                    } catch (error) {
-                        console.error("Error parsing DOCX:", error);
-                        resolve({
-                            studentName: "Unknown (Error parsing)",
-                            studentId: studentIdFromFilename,
-                            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
-                            issuer: PROVIDER_NAME,
-                            fileName: file.name
-                        });
-                    }
-                };
-                reader.onerror = function() {
-                    console.error("FileReader error for:", file.name);
-                    resolve(null);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
-        // ---------- SCAN FOLDER WITH REMEMBERED PERMISSION ----------
+        // ---------- SCAN FOLDER ----------
         async function scanFolderWithPermission() {
             if (isScanning) return;
             
@@ -507,11 +571,11 @@
             }
             
             const tcFiles = entries.filter(entry => {
-                return entry.name.match(/^TC-\d{6,8}\.docx$/i);
+                return entry.name.match(/^TC-\d{6,8}\.(docx|pdf)$/i);
             });
             
             if (tcFiles.length === 0) {
-                fileStatus.textContent = `⚠️ No TC files found`;
+                fileStatus.textContent = `⚠️ No TC files found (looking for TC-{ID}.docx or .pdf)`;
                 fileStatus.style.background = "#fff3d6";
                 autoScanBtn.disabled = false;
                 isScanning = false;
@@ -521,7 +585,7 @@
             
             fileStatus.textContent = `⏳ Processing ${tcFiles.length} files...`;
             
-            const newRecords = [];
+            const idMap = new Map();
             let processed = 0;
             
             for (const entry of tcFiles) {
@@ -529,28 +593,31 @@
                     const file = await entry.getFile();
                     const record = await extractRecordsFromFile(file);
                     if (record) {
-                        newRecords.push(record);
+                        const existing = idMap.get(record.studentId);
+                        if (!existing || (file.name.endsWith('.docx') && existing.fileName.endsWith('.pdf'))) {
+                            idMap.set(record.studentId, record);
+                        }
                     }
                     processed++;
                     const percent = (processed / tcFiles.length) * 100;
                     progressFill.style.width = `${percent}%`;
-                    fileStatus.textContent = `⏳ ${processed}/${tcFiles.length} (${record?.studentName || 'Unknown'})`;
+                    fileStatus.textContent = `⏳ ${processed}/${tcFiles.length}`;
                 } catch (e) {
                     console.error("Error processing file:", entry.name, e);
                 }
             }
             
+            const uniqueRecords = Array.from(idMap.values());
+            
             const existingIds = new Set(allRecords.map(r => r.studentId));
-            let addedCount = 0;
-            for (const rec of newRecords) {
+            for (const rec of uniqueRecords) {
                 if (!existingIds.has(rec.studentId)) {
                     allRecords.push(rec);
                     existingIds.add(rec.studentId);
-                    addedCount++;
                 }
             }
             
-            fileStatus.textContent = `✅ ${allRecords.length} records extracted`;
+            fileStatus.textContent = `✅ ${allRecords.length} records extracted from ${tcFiles.length} file(s)`;
             fileStatus.style.background = "#e6f5e6";
             renderReport(allRecords);
             
@@ -561,7 +628,7 @@
             }, 1000);
         }
 
-        // ---------- RENDER FUNCTION (TABLE FORMAT) ----------
+        // ---------- RENDER FUNCTION ----------
         function renderReport(formsArray) {
             reportList.innerHTML = '';
 
@@ -604,7 +671,7 @@
             const sorted = [...formsArray].sort((a, b) => {
                 const dateA = parseDate(a.date);
                 const dateB = parseDate(b.date);
-                return dateB - dateA; // Newest first
+                return dateB - dateA;
             });
 
             const table = document.createElement('table');
@@ -648,7 +715,8 @@
                 
                 const fileTd = document.createElement('td');
                 fileTd.className = 'file-name-col';
-                fileTd.textContent = item.fileName || '';
+                const fileExt = item.fileName ? item.fileName.split('.').pop().toUpperCase() : '';
+                fileTd.innerHTML = `${item.fileName || ''} <span class="file-type-badge">${fileExt}</span>`;
                 tr.appendChild(fileTd);
                 
                 tbody.appendChild(tr);
