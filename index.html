@@ -586,18 +586,22 @@
         .footer-note .right { color: var(--gray-400); }
         .footer-note .right i { color: var(--success); }
 
+        /* --- UPDATED BOTTOM FOOTER - REDUCED SPACING --- */
         .bottom-footer {
             background: #1a2a4a;
-            padding: 16px 28px;
+            padding: 12px 28px;
             text-align: center;
             border-top: 2px solid var(--primary-light);
         }
         .bottom-footer p {
             color: rgba(255, 255, 255, 0.85);
-            font-size: 15px;
-            line-height: 1.8;
-            letter-spacing: 0.02em;
+            font-size: 13px;
+            line-height: 1.4;
+            letter-spacing: 0.01em;
             font-family: 'Times New Roman', Times, serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .bottom-footer a {
             color: #7ab7ff;
@@ -616,8 +620,8 @@
             text-decoration: underline;
         }
         .bottom-footer .separator {
-            color: rgba(255, 255, 255, 0.3);
-            margin: 0 6px;
+            color: rgba(255, 255, 255, 0.25);
+            margin: 0 3px;
         }
 
         @media (max-width: 768px) {
@@ -642,8 +646,8 @@
             .report-container { padding: 16px 16px 8px 16px; }
             .report-table th, .report-table td { padding: 8px 12px; font-size: 0.75rem; }
             .footer-note { padding: 12px 16px; flex-direction: column; align-items: center; text-align: center; }
-            .bottom-footer { padding: 14px 16px; }
-            .bottom-footer p { font-size: 14px; }
+            .bottom-footer { padding: 10px 16px; }
+            .bottom-footer p { font-size: 11px; white-space: normal; }
             .login-box { padding: 25px 20px; width: 300px; }
             .progress-bar { top: 174px; }
         }
@@ -656,7 +660,8 @@
             .auto-scan-btn { padding: 8px 16px; font-size: 0.75rem; }
             .file-status { font-size: 0.65rem; padding: 2px 10px; }
             .report-table th, .report-table td { padding: 6px 8px; font-size: 0.7rem; }
-            .bottom-footer p { font-size: 13px; }
+            .bottom-footer { padding: 8px 14px; }
+            .bottom-footer p { font-size: 10px; white-space: normal; }
             .login-box { padding: 20px 16px; width: 280px; }
             .login-box .logo-img { height: 60px; }
             .login-box .app-title { font-size: 12px; }
@@ -745,16 +750,15 @@
         <div class="right"><i class="fas fa-check-circle"></i> Admissions & Registration</div>
     </div>
 
+    <!-- UPDATED BOTTOM FOOTER - REDUCED SPACING -->
     <div class="bottom-footer">
         <p>
-            <a href="https://www.asu.edu.om/" target="_blank">A'Sharqiyah University</a>
-            <span class="separator">:</span>
-            P.O Box 42, Postal Code: 400 Ibra, Sultanate of Oman.
-            <span class="separator">|</span>
-            <a href="https://www.asu.edu.om/CLFS" target="_blank">Center For Language and Foundation Studies</a>.
-            <span class="separator">|</span>
-            Copyright &copy;
-            <a href="mailto:h.rehman@asu.edu.om" class="copyright-link">drkhan 2026</a>.
+            <a href="https://www.asu.edu.om/" target="_blank">A'Sharqiyah University</a><span class="separator">:</span>
+            P.O Box 42, Postal Code: 400 Ibra, Sultanate of Oman.<span class="separator">|</span>
+            <a href="https://www.asu.edu.om/CLFS" target="_blank">Center For Language and Foundation Studies</a>.<span class="separator">|</span>
+            Copyright &copy; PWA by
+            <a href="mailto:h.rehman@asu.edu.om" class="copyright-link">drkhan</a><span class="separator">|</span>
+            <span style="color: rgba(255, 255, 255, 0.5);">&copy; 2026 drkhan. All Rights Reserved.</span>
         </p>
     </div>
 </div>
