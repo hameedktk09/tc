@@ -215,6 +215,14 @@
             display: block;
             letter-spacing: 0.01em;
         }
+        .uni-sub2 {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            letter-spacing: 0.02em;
+            margin-top: 2px;
+        }
 
         .badge {
             background: rgba(255, 255, 255, 0.15);
@@ -619,6 +627,7 @@
             .logo-placeholder { width: 160px; height: 65px; }
             .uni-name { font-size: 1.3rem; }
             .uni-sub { font-size: 0.75rem; }
+            .uni-sub2 { font-size: 0.7rem; }
             .badge { align-self: flex-start; font-size: 0.65rem; }
             .user-info { align-self: flex-start; align-items: flex-start; }
             .scan-area { 
@@ -643,6 +652,7 @@
             .logo-placeholder { width: 130px; height: 55px; }
             .uni-name { font-size: 1.1rem; }
             .uni-sub { font-size: 0.65rem; }
+            .uni-sub2 { font-size: 0.6rem; }
             .auto-scan-btn { padding: 8px 16px; font-size: 0.75rem; }
             .file-status { font-size: 0.65rem; padding: 2px 10px; }
             .report-table th, .report-table td { padding: 6px 8px; font-size: 0.7rem; }
@@ -690,6 +700,7 @@
             <div>
                 <span class="uni-name">A'Sharqiyah University</span>
                 <span class="uni-sub">Center For Language and Foundation Studies</span>
+                <span class="uni-sub2">Transfer Credits Tracker</span>
             </div>
         </div>
         <div class="user-info" id="userInfo">
@@ -1073,29 +1084,41 @@
 
     // ---------- EXTRACT STUDENT NAME ----------
     function extractStudentName(text) {
-        let match = text.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
+        // Clean the text first
+        const cleanText = text.replace(/\s+/g, ' ').trim();
+        
+        // Try multiple patterns to find the student name
+        let name = null;
+        
+        // Pattern 1: "Student Name: Name Here"
+        let match = cleanText.match(/Student\s*Name\s*[:：]\s*([^\n\r,]+)/i);
         if (match && match[1]) {
-            let name = match[1].trim().replace(/\s{2,}/g, ' ');
-            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+            name = match[1].trim().replace(/\s{2,}/g, ' ');
+            // Remove trailing words that aren't part of the name
+            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree|Major|GPA|University|College).*$/i, '').trim();
             if (name.length > 2 && /^[A-Za-z\s\.]+$/.test(name)) {
                 return name;
             }
         }
         
-        match = text.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
+        // Pattern 2: "Name: Name Here"
+        match = cleanText.match(/Name\s*[:：]\s*([^\n\r,]+)/i);
         if (match && match[1]) {
-            let name = match[1].trim().replace(/\s{2,}/g, ' ');
-            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree).*$/i, '').trim();
+            name = match[1].trim().replace(/\s{2,}/g, ' ');
+            name = name.replace(/\s+(Application|Date|Submission|Student|ID|Degree|Major|GPA|University|College).*$/i, '').trim();
             if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
                 return name;
             }
         }
         
-        const lines = text.split(/[\n\.]/);
-        for (let i = 0; i < Math.min(5, lines.length); i++) {
+        // Pattern 3: Look for a name at the beginning of the document (first line that looks like a name)
+        const lines = cleanText.split(/[.\n]/);
+        for (let i = 0; i < Math.min(10, lines.length); i++) {
             const line = lines[i].trim();
+            // Check if it's a valid name (only letters, spaces, dots)
             if (line.length > 3 && /^[A-Za-z\s\.]+$/.test(line)) {
-                const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration'];
+                // Exclude common headers
+                const excludeWords = ['Student', 'Name', 'Application', 'Submission', 'Date', 'Degree', 'Major', 'GPA', 'University', 'College', 'Course', 'Credits', 'Grade', 'Total', 'Percentage', 'Program', 'Head', 'Department', 'Dean', 'Director', 'Approval', 'Admissions', 'Registration', 'Transfer', 'Credits', 'Form', 'Tracker', 'Sign', 'In', 'Login', 'Welcome', 'Administrator', 'Logout', 'Auto', 'Scan', 'Ready', 'Search'];
                 let isExcluded = false;
                 for (const word of excludeWords) {
                     if (line.match(new RegExp(word, 'i'))) {
@@ -1109,12 +1132,13 @@
             }
         }
         
-        const studentIndex = text.search(/\bStudent\b/i);
+        // Pattern 4: Look for a name after "Student" keyword
+        const studentIndex = cleanText.search(/\bStudent\b/i);
         if (studentIndex !== -1) {
-            const afterStudent = text.substring(studentIndex + 7);
+            const afterStudent = cleanText.substring(studentIndex + 7);
             const nameMatch = afterStudent.match(/^[^,.\n]*/);
             if (nameMatch) {
-                let name = nameMatch[0].trim();
+                name = nameMatch[0].trim();
                 name = name.replace(/\s+(Application|Date|Submission|ID|Degree).*$/i, '').trim();
                 if (name.length > 3 && /^[A-Za-z\s\.]+$/.test(name)) {
                     return name;
@@ -1123,6 +1147,59 @@
         }
         
         return "Unknown Student";
+    }
+
+    // ---------- EXTRACT STUDENT ID ----------
+    function extractStudentId(text, fileName) {
+        // First try to extract from filename if it contains an ID pattern
+        let idMatch = fileName.match(/\b(\d{6,8})\b/);
+        if (idMatch) {
+            return idMatch[1];
+        }
+        
+        // Try to find ID in the text
+        const cleanText = text.replace(/\s+/g, ' ').trim();
+        
+        // Look for "Student ID: XXXXXX"
+        let match = cleanText.match(/Student\s*ID\s*[:：]\s*(\d{6,8})/i);
+        if (match) {
+            return match[1];
+        }
+        
+        // Look for "ID: XXXXXX"
+        match = cleanText.match(/ID\s*[:：]\s*(\d{6,8})/i);
+        if (match) {
+            return match[1];
+        }
+        
+        // Look for any 6-8 digit number
+        match = cleanText.match(/\b(\d{6,8})\b/);
+        if (match) {
+            return match[1];
+        }
+        
+        return null;
+    }
+
+    // ---------- CHECK IF FILE IS A TC DOCUMENT ----------
+    function isTCDocument(fileName) {
+        const name = fileName.toLowerCase();
+        // Check for various TC patterns
+        const patterns = [
+            /^tc[-_.\s]?/i,           // Starts with TC
+            /tc[-_.\s]?/i,             // Contains TC
+            /transfer[-_.\s]?credits/i, // Contains Transfer Credits
+            /tc\./i,                   // Contains TC.
+            /-tc\./i,                  // Contains -TC.
+            /_tc\./i,                  // Contains _TC.
+        ];
+        
+        for (const pattern of patterns) {
+            if (pattern.test(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ---------- EXTRACT DATA FROM DOCX ----------
@@ -1139,7 +1216,8 @@
                     console.log("=== END DOCX TEXT ===");
                     resolve({
                         studentName: extractStudentName(text),
-                        date: extractDateFromText(text)
+                        date: extractDateFromText(text),
+                        studentId: extractStudentId(text, file.name)
                     });
                 } catch (error) {
                     console.error("Error parsing DOCX:", error);
@@ -1174,7 +1252,8 @@
             
             return {
                 studentName: extractStudentName(fullText),
-                date: extractDateFromText(fullText)
+                date: extractDateFromText(fullText),
+                studentId: extractStudentId(fullText, file.name)
             };
         } catch (error) {
             console.error("Error parsing PDF:", error);
@@ -1185,14 +1264,17 @@
     // ---------- EXTRACT DATA FROM FILE ----------
     async function extractRecordsFromFile(file) {
         return new Promise((resolve) => {
-            const nameMatch = file.name.match(/^TC-(\d{6,8})\.(docx|pdf)$/i);
-            if (!nameMatch) {
+            // Check if this is a TC document
+            if (!isTCDocument(file.name)) {
                 resolve(null);
                 return;
             }
 
-            const studentIdFromFilename = nameMatch[1];
-            const fileExt = nameMatch[2].toLowerCase();
+            const fileExt = file.name.split('.').pop().toLowerCase();
+            if (!['docx', 'pdf'].includes(fileExt)) {
+                resolve(null);
+                return;
+            }
             
             let extractPromise;
             if (fileExt === 'docx') {
@@ -1206,21 +1288,25 @@
             
             extractPromise.then(result => {
                 if (result) {
+                    // Validate that we have a valid name and ID
+                    const hasValidName = result.studentName && result.studentName !== "Unknown Student";
+                    const hasValidId = result.studentId && result.studentId.length >= 6;
+                    
+                    if (!hasValidName || !hasValidId) {
+                        console.log(`Skipping ${file.name} - No valid name or ID found`);
+                        resolve(null);
+                        return;
+                    }
+                    
                     resolve({
                         studentName: result.studentName,
-                        studentId: studentIdFromFilename,
+                        studentId: result.studentId,
                         date: result.date,
                         issuer: PROVIDER_NAME,
                         fileName: file.name
                     });
                 } else {
-                    resolve({
-                        studentName: "Unknown (Extraction failed)",
-                        studentId: studentIdFromFilename,
-                        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'),
-                        issuer: PROVIDER_NAME,
-                        fileName: file.name
-                    });
+                    resolve(null);
                 }
             }).catch(error => {
                 console.error("Extraction error:", error);
@@ -1312,12 +1398,14 @@
             }
         }
         
+        // Look for TC documents with various naming patterns
         const tcFiles = entries.filter(entry => {
-            return entry.name.match(/^TC-\d{6,8}\.(docx|pdf)$/i);
+            return isTCDocument(entry.name) && 
+                   (entry.name.match(/\.(docx|pdf)$/i));
         });
         
         if (tcFiles.length === 0) {
-            fileStatus.textContent = `⚠️ No TC files found (looking for TC-{ID}.docx or .pdf)`;
+            fileStatus.textContent = `⚠️ No TC documents found (looking for files containing "TC" or "Transfer Credits")`;
             fileStatus.style.background = "#fff3d6";
             autoScanBtn.disabled = false;
             isScanning = false;
@@ -1335,8 +1423,8 @@
                 const file = await entry.getFile();
                 const record = await extractRecordsFromFile(file);
                 if (record) {
-                    const existing = idMap.get(record.studentId);
-                    if (!existing || (file.name.endsWith('.docx') && existing.fileName.endsWith('.pdf'))) {
+                    // Check if we already have this student ID
+                    if (!idMap.has(record.studentId)) {
                         idMap.set(record.studentId, record);
                     }
                 }
@@ -1351,13 +1439,8 @@
         
         const uniqueRecords = Array.from(idMap.values());
         
-        const existingIds = new Set(allRecords.map(r => r.studentId));
-        for (const rec of uniqueRecords) {
-            if (!existingIds.has(rec.studentId)) {
-                allRecords.push(rec);
-                existingIds.add(rec.studentId);
-            }
-        }
+        // Replace all records with the new ones (fresh scan)
+        allRecords = uniqueRecords;
         
         fileStatus.textContent = `✅ ${allRecords.length} records extracted from ${tcFiles.length} file(s)`;
         fileStatus.style.background = "#e6f5e6";
